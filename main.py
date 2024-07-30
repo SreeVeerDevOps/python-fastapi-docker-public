@@ -121,12 +121,15 @@ def get_pokemon(request: Request):
 def get_pokemon_name(request: Request, name: str):
     URL = requests.get('https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0')
     POKEMON_LIST = URL.json()['results']
-    for pokemon in POKEMON_LIST:
-        if name == pokemon['name']:
-            pokemon_name = pokemon['name']
-            pokemon_url = pokemon['url']
-            return templates.TemplateResponse("pokesingle.html", {"request": request, "name": "Hello World", "pokemon_name": pokemon_name, "pokemon_url": pokemon_url})
-        else:
-            return templates.TemplateResponse("pokesingle.html", {"request": request, "name": "Hello World", "pokemon_name": 'Pokemon Name Not Found', "pokemon_url": 'Pokemon URL Not Found'}) 
+    POKEMON_LIST_NAME = [ pokemon['name'] for pokemon in POKEMON_LIST]
+    print(POKEMON_LIST_NAME)
+    if name in POKEMON_LIST_NAME:
+        print("Pokemon Exists...")
+        for pokemon in POKEMON_LIST:
+            if pokemon['name'] == name:
+                return templates.TemplateResponse("pokesingle.html", {"request": request, "name": "Hello World", "pokemon_name": pokemon_name, "pokemon_url": pokemon_url})
+    else:
+      return templates.TemplateResponse("pokesingle.html", {"request": request, "name": "Hello World", "pokemon_name": 'Pokemon Name Not Found', "pokemon_url": 'Pokemon URL Not Found'}) 
+
 
     
