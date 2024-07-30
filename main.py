@@ -124,5 +124,7 @@ def get_pokemon_name(request: Request, name: str):
       print(f'Pokemon {name} Dont Exists...')
       return templates.TemplateResponse("pokesingle.html", {"request": request, "name": "Hello World", "pokemon_name": 'Pokemon Name Not Found', "pokemon_url": 'Pokemon URL Not Found'}) 
 
+if __name__ == '__main__':
+    uvicorn.run('main:app', host='0.0.0.0', port=8000)
 
     
