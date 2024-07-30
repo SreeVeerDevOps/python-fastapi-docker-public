@@ -127,6 +127,8 @@ def get_pokemon_name(request: Request, name: str):
         print("Pokemon Exists...")
         for pokemon in POKEMON_LIST:
             if pokemon['name'] == name:
+                pokemon_name = pokemon['name']
+                pokemon_url = pokemon['url']
                 return templates.TemplateResponse("pokesingle.html", {"request": request, "name": "Hello World", "pokemon_name": pokemon_name, "pokemon_url": pokemon_url})
     else:
       return templates.TemplateResponse("pokesingle.html", {"request": request, "name": "Hello World", "pokemon_name": 'Pokemon Name Not Found', "pokemon_url": 'Pokemon URL Not Found'}) 
