@@ -15,16 +15,6 @@ from platform import python_version
 
 load_dotenv()
 
-demo_data = [
-    {"gender": "Male", "location": "Chennai","name": "John", "age": 25},
-    {"gender": "Female", "location": "Mumbai","name": "Jane", "age": 22},
-    {"gender": "Male", "location": "Hyderabad","name": "Anand", "age": 30},
-    {"gender": "Female", "location": "Chennai","name": "Bahrgavi", "age": 40},
-    {"gender": "Male", "location": "Mumbai","name": "Chandra", "age": 21},
-    {"gender": "Female", "location": "Hyderabad","name": "Deepthi", "age": 30},
-    {"gender": "Male", "location": "Bangalore","name": "David", "age": 45}
-]
-
 app = FastAPI()
 
 con_name = os.getenv("HOSTNAME")
