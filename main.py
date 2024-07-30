@@ -26,7 +26,7 @@ templates = Jinja2Templates(directory="templates")
 def homepage(request: Request):
     return templates.TemplateResponse("index.html", {
         "request": request, 
-        "name": "DevSecOpsB41",
+        "name": "Azure B45",
         "container_id": con_name,
         "python_version": python_version
         })
@@ -123,8 +123,5 @@ def get_pokemon_name(request: Request, name: str):
     else:
       print(f'Pokemon {name} Dont Exists...')
       return templates.TemplateResponse("pokesingle.html", {"request": request, "name": "Hello World", "pokemon_name": 'Pokemon Name Not Found', "pokemon_url": 'Pokemon URL Not Found'}) 
-
-if __name__ == '__main__':
-    uvicorn.run('main:app', host='0.0.0.0', port=8000)
 
     
