@@ -1,6 +1,7 @@
 import boto3
 import json
 import os
+import requests
 from dotenv import load_dotenv, find_dotenv
 from fastapi import FastAPI
 from fastapi import FastAPI, Request, UploadFile
