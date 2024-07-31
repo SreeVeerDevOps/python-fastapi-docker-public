@@ -3,7 +3,7 @@ import json
 import os
 from dotenv import load_dotenv, find_dotenv
 from fastapi import FastAPI
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, UploadFile
 from fastapi.templating import Jinja2Templates
 import uvicorn
 import mysql.connector
