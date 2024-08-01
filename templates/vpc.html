@@ -12,18 +12,6 @@
         <center> <h1>{{ name }}</h1> </center>
 <table class="table">
     <tr>
-    <th>VPC ID</th>
-    <th>VPC Addres Space</th>
-    </tr>
-    <tr>
-    {% for vpc_id,vpc_cidr in vpc_dict.items() %}
-    <td>{{ vpc_id }}</td>
-    <td>{{ vpc_cidr }}</td>
-    </tr>
-    {% endfor %}
-</table>
-<table class="table">
-    <tr>
     <th>S.No</th>    
     <th>VPC ID</th>
     <th>VPC Addres Space</th>
