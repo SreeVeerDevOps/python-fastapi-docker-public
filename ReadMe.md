@@ -16,7 +16,7 @@ Deploying To Azure App Service:
    Create two branches for two slots. Dev Branch and Prod Branch for Prod Slot.
    For Dev Slot DEPLOYMENT_BRANCH=Dev
    For Prod Slot DEPLOYMENT_BRANCH=Prod
-   
+
    You can also change the DEPLOYMENT_BRANCH app setting in the Azure portal, by selecting Configuration under Settings
    and adding a new Application Setting with a name of DEPLOYMENT_BRANCH and value of main.
 6. Run following commands:
@@ -25,3 +25,7 @@ Deploying To Azure App Service:
 
    This will deploy the app to the AppService.
    Access to URL for homepage. Refer to screeenshots.
+
+https://azb45fastapi-dev.scm.azurewebsites.net/ - OLD 
+https://azb45fastapi-dev.scm.azurewebsites.net/newui/ - NEW
+
