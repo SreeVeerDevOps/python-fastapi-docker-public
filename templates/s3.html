@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bootstrap Sample</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <center> <h1>{{ name }}</h1> </center>
+        <center> <h1>Total Bucket Count Is {{ total_bucket_count }}</h1> </center>
+<table class="table">
+    <tr>
+    <th>S.No</th>    
+    <th>Bucket Name</th>
+    <th>Created On</th>
+    </tr>
+    <tr>
+    {% for bucket in bucket_list %}
+    {# https://stackoverflow.com/questions/27035728/flask-cannot-import-enumerate-undefinederror-enumerate-is-undefined #}
+    <td>{{ loop.index0 }}</td>
+    <td>{{ bucket['Name'] }}</td>
+    <td>{{ bucket['CreationDate'] }}</td>
+    </tr>
+    {% endfor %}
+</table>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
