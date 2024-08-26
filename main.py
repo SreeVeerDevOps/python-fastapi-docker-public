@@ -37,10 +37,8 @@ def homepage(request: Request):
         })
 
 @app.get("/")
-def homepage():
+def container():
   return f'Your API Request Is Processed By The Container ID {con_name} running Python Version {python_version}.'
-
-import requests
 
 @app.get('/certs/{region}')
 def get_certs(request: Request, region: str):
