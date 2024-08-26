@@ -19,7 +19,9 @@ load_dotenv()
 app = FastAPI()
 
 con_name = os.getenv("HOSTNAME")
+branch_name = os.getenv("DEPLOYMENT_BRANCH")
 python_version = os.getenv("PYTHON_VERSION")
+IP = requests.get('https://api.ipify.org').content.decode('utf8')
 
 templates = Jinja2Templates(directory="templates")
 
@@ -27,9 +29,11 @@ templates = Jinja2Templates(directory="templates")
 def homepage(request: Request):
     return templates.TemplateResponse("index.html", {
         "request": request, 
-        "name": "Azure B45",
+        "name": "Azure B46",
         "container_id": con_name,
-        "python_version": python_version
+        "python_version": python_version,
+        "IP": IP,
+        "branch_name": branch_name
         })
 
 @app.get("/")
