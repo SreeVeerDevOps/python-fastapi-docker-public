@@ -39,7 +39,6 @@ def homepage(request: Request):
 @app.get("/")
 def container():
   return f'Your API Request Is Processed By The Container ID {con_name} running Python Version {python_version}.'
-
 @app.get('/certs/{region}')
 def get_certs(request: Request, region: str):
     acm_conn = boto3.client('acm',region_name=region)
