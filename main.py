@@ -2,12 +2,12 @@ import boto3
 import json
 import os
 import requests
-from dotenv import load_dotenv, find_dotenv
-from fastapi import FastAPI
-from fastapi import FastAPI, Request, UploadFile
-from fastapi.templating import Jinja2Templates
+import datetime
 import uvicorn
 import mysql.connector
+from dotenv import load_dotenv, find_dotenv
+from fastapi import FastAPI, Request, UploadFile
+from fastapi.templating import Jinja2Templates
 from azure.keyvault.secrets import SecretClient
 from azure.identity import DefaultAzureCredential
 from azure.storage.blob.aio import BlobServiceClient
@@ -39,13 +39,13 @@ def homepage(request: Request):
 @app.get("/")
 def container():
   return f'Your API Request Is Processed By The Container ID {con_name} running Python Version {python_version}.'
+
 @app.get('/certs/{region}')
 def get_certs(request: Request, region: str):
     acm_conn = boto3.client('acm',region_name=region)
     all_certs = acm_conn.list_certificates().get('CertificateSummaryList')
     return templates.TemplateResponse("certs.html", {"request": request, "name": "Certificates List", "all_certs": all_certs})
-
-import datetime    
+    
 @app.get('/certs/{region}/expired')
 def get_certs_expired(request: Request, region: str):
     acm_conn = boto3.client('acm',region_name=region)
