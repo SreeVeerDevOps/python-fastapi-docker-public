@@ -19,7 +19,13 @@ load_dotenv()
 app = FastAPI()
 
 con_name = os.getenv("HOSTNAME")
-branch_name = os.getenv("DEPLOYMENT_BRANCH") #Only works with Azure App Service
+b_name = os.getenv("DEPLOYMENT_BRANCH")
+
+if b_name:
+    branch_name = b_name
+else:
+    branch_name = 'NOT-A-GIT-REPO'
+    
 python_version = os.getenv("PYTHON_VERSION")
 IP = requests.get('https://api.ipify.org').content.decode('utf8')
 
