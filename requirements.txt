@@ -1,5 +1,6 @@
 boto3
 fastapi
+faker
 uvicorn
 Jinja2
 requests
