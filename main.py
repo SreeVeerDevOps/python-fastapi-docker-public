@@ -20,12 +20,16 @@ app = FastAPI()
 
 con_name = os.getenv("HOSTNAME")
 b_name = os.getenv("DEPLOYMENT_BRANCH")
-
+app_name = os.getenv("APP_NAME")
 if b_name:
     branch_name = b_name
 else:
     branch_name = 'NOT-A-GIT-REPO'
-    
+
+if app_name:
+    name = app_name
+else:
+    name = "DEMO-APP"  
 python_version = os.getenv("PYTHON_VERSION")
 IP = requests.get('https://api.ipify.org').content.decode('utf8')
 
@@ -35,7 +39,7 @@ templates = Jinja2Templates(directory="templates")
 def homepage(request: Request):
     return templates.TemplateResponse("index.html", {
         "request": request, 
-        "name": "Azure B46",
+        "name": app_name,
         "container_id": con_name,
         "python_version": python_version,
         "IP": IP,
