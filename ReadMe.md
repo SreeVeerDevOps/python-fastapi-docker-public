@@ -27,7 +27,7 @@ uvicorn main:app --host 0.0.0.0 --port 8001 --reload &
    git push origin master  
 
    This will deploy the app to the AppService.  
-   Access to URL for homepage. Refer to screeenshots. 
+   Access to URL for homepage. Refer to screeenshots.. 
 
 https://azb45fastapi-dev.scm.azurewebsites.net/ - OLD    
 https://azb45fastapi-dev.scm.azurewebsites.net/newui/ - NEW 
