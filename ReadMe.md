@@ -8,7 +8,7 @@ cd fastapi
 pip3 install -r requirements.txt    
 uvicorn main:app --host 0.0.0.0 --port 8001 --reload &      
 
-## Deploying To Azure App Service:
+## Deploying To Azure App Services:
 1. Clone https://github.com/SreeVeerDevOps/python-fastapi-docker-public.git to local.  
 2. Deploy new azure appservice with Python 3.10 platform.   
 3. Once deployed go to Configuration -> Startup Command and give as below  
