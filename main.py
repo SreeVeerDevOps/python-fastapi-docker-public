@@ -26,7 +26,7 @@ if b_name:
 else:
     branch_name = 'NOT-A-GIT-REPO'
 
-if !app_name:
+if app_name:
     name = "DEMO-APP"
 else:
     name = app_name  
