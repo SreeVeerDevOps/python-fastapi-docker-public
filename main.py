@@ -27,9 +27,9 @@ else:
     branch_name = 'NOT-A-GIT-REPO'
 
 if app_name is None:
-    name = "DEMO-APP"
+    app_name = "DEMO-APP"
 else:
-    name = app_name  
+    app_name = app_name  
 python_version = os.getenv("PYTHON_VERSION")
 IP = requests.get('https://api.ipify.org').content.decode('utf8')
 
