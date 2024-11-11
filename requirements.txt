@@ -19,3 +19,6 @@ google-cloud-appengine-admin
 mysql-connector-python
 SQLAlchemy
 pymongo
+opentelemetry-api
+opentelemetry-sdk
+azure-monitor-opentelemetry
