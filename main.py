@@ -27,7 +27,7 @@ else:
     branch_name = 'NOT-A-GIT-REPO'
 
 if app_name is None:
-    app_name = "FASTAPI-DEMO-APP"
+    app_name = "FASTAPI-DEMO-APP-DEFAULT"
 else:
     app_name = app_name
 
