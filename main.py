@@ -21,6 +21,9 @@ key_vault_uri = f"https://azureb50kv.vault.azure.net"
 secret_name1 = "aws-access-key"
 secret_name2 = "aws-secret-key"
 
+#I have deployed 3 Servers in HUB, SP1 and SP1, Created a User Assigned Managed Idenitity 
+#and added to all the 3 servers and also provided acecss to keyvault.
+
 credential = DefaultAzureCredential()
 client = SecretClient(vault_url=key_vault_uri, credential=credential)
 retrieved_secret1 = client.get_secret(secret_name1)
