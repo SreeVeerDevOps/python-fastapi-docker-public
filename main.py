@@ -22,7 +22,8 @@ secret_name1 = "aws-access-key"
 secret_name2 = "aws-secret-key"
 
 #I have deployed 3 Servers in HUB, SP1 and SP1, Created a User Assigned Managed Idenitity 
-#and added to all the 3 servers and also provided acecss to keyvault.
+#and added to all the 3 servers and also provided access to keyvault using single Private Endpoint
+#and single private DNS Zone in HUB-RG.
 
 credential = DefaultAzureCredential()
 client = SecretClient(vault_url=key_vault_uri, credential=credential)
