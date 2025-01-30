@@ -1,4 +1,4 @@
-FROM python:3.11
+FROM python:3.12
 LABEL author="Sreeharsha Veerapalli"
 WORKDIR /app
 RUN apt update && apt install -y python3-pip jq net-tools tree unzip
