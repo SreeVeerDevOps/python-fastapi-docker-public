@@ -1,4 +1,7 @@
 # Python FastAPI Application For Testing Azure AppService
+MAKE SURE YOU DONT ENABLE APPINSIGHTS FOR THE APPSERVICE AS ITS THROWING A IMPORT ERROR AS BELOW. FACED THIS WITH BATCH 50.
+"ImportError: cannot import name 'AccessTokenInfo' from 'azure.core.credentials' (/agents/python/azure/core/credentials.py). Did you mean: 'AccessToken'?"
+https://github.com/Azure/azure-sdk-for-python/issues/37491
 
 ## Bootstrap Code For Linux 
 #!/bin/bash    
