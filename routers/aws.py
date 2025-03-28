@@ -43,7 +43,9 @@ def get_vpcs(request: Request, region: str):
      vpc_id = [VPC['VpcId'] for VPC in all_vpcs]
      vpc_cidr = [VPC['CidrBlock'] for VPC in all_vpcs]
      vpc_info = dict(zip(vpc_id, vpc_cidr))
-     return templates.TemplateResponse("vpc.html", {"request": request, "name": "VPC INFO", "vpc_dict": vpc_info})
+     from_region = region
+     cap_region = from_region.upper()
+     return templates.TemplateResponse("vpc.html", {"request": request, "name": "VPC INFO OF REGION","region": cap_region,  "vpc_dict": vpc_info})
     
     
 @router.get("/s3/{region}", tags=["AWS"])
