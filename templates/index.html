@@ -15,6 +15,34 @@
         <h1>Your Container Is Running Python Version: {{ python_version }}</h1><br>
         <h1>Public IP Address Of This WebApp Is: {{ IP }}</h1><br>
         <h1>This Is a From {{ branch_name }} Branch</h1><br>
+        <h1>AWS ECS APP VERSION 2.0</h1><br>
+        <h2>Select Region:</h2><br>
+        <select id="region-select" class="form-control">
+            <option value="us-east-1">US East 1</option>
+            <option value="us-east-2">US East 2</option>
+            <option value="ap-south-1">Mumbai</option>
+        </select><br>
+        <a href="/pokemon" class="btn btn-primary">List Pokemon</a>
+        <a href="/certs/us-east-1" class="btn btn-primary">List Certificates</a>
+        <a href="/certs/us-east-1/expired" class="btn btn-primary">List Expired Certificates</a>
+        <a href="/s3/us-east-1" class="btn btn-primary">List S3 Buckets</a>
+        <a href="/vpcs/us-east-1" class="btn btn-primary">List VPCs</a>
+        <script>
+            document.getElementById('region-select').addEventListener('change', function() {
+            var region = this.value;
+            document.querySelector('a[href="/certs/us-east-1"]').setAttribute('href', '/certs/' + region);
+            document.querySelector('a[href="/certs/us-east-1/expired"]').setAttribute('href', '/certs/' + region + '/expired');
+            document.querySelector('a[href="/s3/us-east-1"]').setAttribute('href', '/s3/' + region);
+            document.querySelector('a[href="/vpcs/us-east-1"]').setAttribute('href', '/vpcs/' + region);
+            });
+        </script>
+        <script>
+            document.querySelector('a[href="/pokemon"]').setAttribute('target', '_blank');
+            document.querySelector('a[href="/certs/us-east-1"]').setAttribute('target', '_blank');
+            document.querySelector('a[href="/certs/us-east-1/expired"]').setAttribute('target', '_blank');
+            document.querySelector('a[href="/s3/us-east-1"]').setAttribute('target', '_blank');
+            document.querySelector('a[href="/vpcs/us-east-1"]').setAttribute('target', '_blank');
+        </script>
     </div>
 
     <!-- Bootstrap JS -->
