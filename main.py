@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Request, UploadFile
 import uvicorn
 import requests, socket, platform
-from routers import aws, azure, pokemon
+from routers import aws, azure, pokemon, aws-raw-output
 from fastapi.templating import Jinja2Templates
 import boto3
 import json
@@ -50,7 +50,7 @@ def homepage(request: Request):
         "branch_name": branch_name
         })
 
-app.include_router(awsraw.router)
+app.include_router(aws-raw-output.router)
 app.include_router(aws.router)
 app.include_router(azure.router)
 app.include_router(pokemon.router)
