@@ -53,4 +53,5 @@ def homepage(request: Request):
 app.include_router(aws.router)
 app.include_router(azure.router)
 app.include_router(pokemon.router)
+app.include_router(aws_raw_output.router)
     
