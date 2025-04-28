@@ -2,6 +2,7 @@ import boto3
 from fastapi import APIRouter
 from fastapi import FastAPI, Request, UploadFile
 from fastapi.templating import Jinja2Templates
+import requests
 router = APIRouter()
 
 templates = Jinja2Templates(directory="templates")
