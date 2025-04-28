@@ -50,8 +50,9 @@ def homepage(request: Request):
         "branch_name": branch_name
         })
 
+app.include_router(aws_raw_output.router)
 app.include_router(aws.router)
 app.include_router(azure.router)
 app.include_router(pokemon.router)
-app.include_router(aws_raw_output.router)
+
     
