@@ -7,6 +7,9 @@ router = APIRouter()
 
 templates = Jinja2Templates(directory="templates")
 
+@router.get('/raw/health', tags=["AWS-RAW"])
+def health():
+    return 'All Is Well'
    
 @router.get('/raw/certs/{region}', tags=["AWS-RAW"])
 def get_certs(request: Request, region: str):
