@@ -39,8 +39,9 @@ def get_vpc_id_list(region)->list:
 def get_s3_buckets(request: Request)->list:
     s3 = boto3.client('s3', region_name='us-east-1')
     bucket_list = s3.list_buckets().get('Buckets')
-    print(bucket_list)
-    return bucket_list
+    bucket_list_name = [ buck['Name'] for buck in bucket_list ]
+    print(bucket_list_name)
+    return bucket_list_name
 
 @router.get('/raw/pokemon',tags=["AWS-RAW"])
 def get_pokemon(request: Request):
