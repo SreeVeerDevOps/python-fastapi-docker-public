@@ -36,8 +36,8 @@ def get_vpc_id_list(region)->list:
     return vpc_id_list
 
 @router.get("/raw/s3", tags=["AWS-RAW"])
-def get_s3_buckets(request: Request, region: str)->list:
-    s3 = boto3.client('s3', region_name=region)
+def get_s3_buckets(request: Request)->list:
+    s3 = boto3.client('s3', region_name='us-east-1')
     bucket_list = s3.list_buckets().get('Buckets')
     print(bucket_list)
     return bucket_list
