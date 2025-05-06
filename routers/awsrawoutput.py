@@ -35,13 +35,13 @@ def get_vpc_id_list(region)->list:
     print(vpc_id_list)
     return vpc_id_list
 
-@router.get("/raw/s3/{region}", tags=["AWS-RAW"])
+@router.get("/raw/s3", tags=["AWS-RAW"])
 def get_s3_buckets(request: Request, region: str)->list:
     s3 = boto3.client('s3', region_name=region)
     bucket_list = s3.list_buckets().get('Buckets')
     print(bucket_list)
     return bucket_list
-    
+
 @router.get('/raw/pokemon',tags=["AWS-RAW"])
 def get_pokemon(request: Request):
     URL = requests.get('https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0')
