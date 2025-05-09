@@ -9,6 +9,7 @@ botocore
 ipython
 pydantic
 google-cloud-storage
+azure-appconfiguration
 azure-storage-blob
 azure-keyvault-secrets
 azure-identity
