@@ -16,14 +16,24 @@ def aws_router():
 def get_certs(request: Request, region: str):
     acm_conn = boto3.client('acm',region_name=region)
     all_certs = acm_conn.list_certificates().get('CertificateSummaryList')
-    return templates.TemplateResponse("certs.html", {"request": request, "name": "Certificates List", "all_certs": all_certs})
+    first_cert = all_certs[0]
+    cert_split = first_cert['CertificateArn'].split(':')
+    account_id = cert_split[4] 
+    from_region = region
+    cap_region = from_region.upper()
+    return templates.TemplateResponse("certs.html", {"request": request, "name": "Certificates List", "region": cap_region,"account_id": account_id,"all_certs": all_certs})
     
 @router.get('/certs/{region}/expired', tags=["AWS"])
 def get_certs_expired(request: Request, region: str):
     acm_conn = boto3.client('acm',region_name=region)
-    all_cert = acm_conn.list_certificates().get('CertificateSummaryList')
-    expited_certs = [cert for cert in all_cert if cert['Status'] == 'EXPIRED']    
-    return templates.TemplateResponse("certs.html", {"request": request, "name": "Expired Certificates List", "all_certs": expited_certs})
+    from_region = region
+    cap_region = from_region.upper()
+    all_certs = acm_conn.list_certificates().get('CertificateSummaryList')
+    first_cert = all_certs[0]
+    cert_split = first_cert['CertificateArn'].split(':')
+    account_id = cert_split[4] 
+    expited_certs = [cert for cert in all_certs if cert['Status'] == 'EXPIRED']    
+    return templates.TemplateResponse("certs.html", {"request": request, "name": "Expired Certificates List", "region": cap_region,"account_id": account_id,"all_certs": expited_certs})
  
  
 @router.get("/getvpc", tags=["AWS"])
