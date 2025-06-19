@@ -58,7 +58,7 @@ def get_vpcs(request: Request, region: str):
      account_id = sts.get_caller_identity()["Account"]
      print(account_id)
      cap_region = from_region.upper()
-     return templates.TemplateResponse("vpc.html", {"request": request, "name": "VPC INFO OF REGION","region": cap_region,  "vpc_dict": vpc_info, "account_id": account_id})
+     return templates.TemplateResponse("vpc.html", {"request": request, "name": "VPC Info For Region","region": cap_region,  "vpc_dict": vpc_info, "account_id": account_id})
     
     
 @router.get("/s3/{region}", tags=["AWS"])
