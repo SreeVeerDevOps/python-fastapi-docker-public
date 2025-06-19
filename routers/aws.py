@@ -54,8 +54,11 @@ def get_vpcs(request: Request, region: str):
      vpc_cidr = [VPC['CidrBlock'] for VPC in all_vpcs]
      vpc_info = dict(zip(vpc_id, vpc_cidr))
      from_region = region
+     sts = boto3.client('sts',region_name=region)
+     account_id = sts.get_caller_identity()["Account"]
+     print(account_id)
      cap_region = from_region.upper()
-     return templates.TemplateResponse("vpc.html", {"request": request, "name": "VPC INFO OF REGION","region": cap_region,  "vpc_dict": vpc_info})
+     return templates.TemplateResponse("vpc.html", {"request": request, "name": "VPC INFO OF REGION","region": cap_region,  "vpc_dict": vpc_info, "account_id": account_id})
     
     
 @router.get("/s3/{region}", tags=["AWS"])
@@ -63,7 +66,10 @@ def get_s3_buckets(request: Request, region: str)->list:
     s3 = boto3.client('s3', region_name=region)
     bucket_list = s3.list_buckets().get('Buckets')
     total_bucket_count = len(bucket_list)
-    return templates.TemplateResponse("s3.html", {"request": request, "total_bucket_count": total_bucket_count, "name": "S3 BUCKET INFO", "bucket_list": bucket_list})
+    sts = boto3.client('sts',region_name=region)
+    account_id = sts.get_caller_identity()["Account"]
+    #print(account_id)
+    return templates.TemplateResponse("s3.html", {"request": request, "total_bucket_count": total_bucket_count, "name": "S3 BUCKET INFO", "bucket_list": bucket_list, "account_id": account_id})
 
 @router.get("/checks3", tags=["AWS"])
 def check_bucket(bucket_name,region):
