@@ -25,6 +25,9 @@ uvicorn main:app --host 0.0.0.0 --port 8001 --reload &
 5. Settings -> Environment variables -> App Settings -> Add 
    DEPLOYMENT_BRANCH = Dev and Select Deployment slot setting and save. 
    Also give AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY
+   @Microsoft.KeyVault(SecretUri=https://azureb53kv.vault.azure.net/secrets/appsvc-deploymen5-branch-dev)
+   @Microsoft.KeyVault(SecretUri=https://azureb53kv.vault.azure.net/secrets/dev-aws-access-key-id)
+   @Microsoft.KeyVault(SecretUri=https://azureb53kv.vault.azure.net/secrets/dev-aws-secret-key-id)
 
 6.  Open powershell from the fastapi code and perform following comamnds: 
     git init; git add.; git commmit -m "BaseCode"; git branch; git checkout -b dev 
