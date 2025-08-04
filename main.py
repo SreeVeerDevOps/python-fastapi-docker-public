@@ -16,22 +16,8 @@ from azure.storage.blob.aio import BlobServiceClient
 from azure.mgmt.compute import ComputeManagementClient
 from platform import python_version
 
-key_vault_name = "azureb53kv"
-key_vault_uri = f"https://azureb53kv.vault.azure.net"
-secret_name1 = "aws-access-key"
-secret_name2 = "aws-secret-key"
-
-#I have deployed 3 Servers in HUB, SP1 and SP1, Created a User Assigned Managed Idenitity 
-#and added to all the 3 servers and also provided access to keyvault using single Private Endpoint
-#and single private DNS Zone in HUB-RG.
 
 credential = DefaultAzureCredential()
-client = SecretClient(vault_url=key_vault_uri, credential=credential)
-retrieved_secret1 = client.get_secret(secret_name1)
-retrieved_secret2 = client.get_secret(secret_name2)
-
-os.environ['AWS_ACCESS_KEY_ID'] = retrieved_secret1.value
-os.environ['AWS_SECRET_ACCESS_KEY'] = retrieved_secret2.value
 
 load_dotenv()
 
