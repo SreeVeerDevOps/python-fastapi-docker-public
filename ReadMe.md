@@ -1,4 +1,7 @@
 # Python FastAPI Application For Testing Azure AppService
+MAKE SURE YOU DONT ENABLE APPINSIGHTS FOR THE APPSERVICE AS ITS THROWING A IMPORT ERROR AS BELOW. FACED THIS WITH BATCH 50.
+"ImportError: cannot import name 'AccessTokenInfo' from 'azure.core.credentials' (/agents/python/azure/core/credentials.py). Did you mean: 'AccessToken'?"
+https://github.com/Azure/azure-sdk-for-python/issues/37491
 
 ## Bootstrap Code For Linux 
 #!/bin/bash    
@@ -27,8 +30,8 @@ uvicorn main:app --host 0.0.0.0 --port 8001 --reload &
     git init; git add.; git commmit -m "BaseCode"; git branch; git checkout -b dev 
 
 7. Go to Deployment Center and configure Local Git which will give a Git repo to push. 
-   By default the app will take master as default branch. We can change that by using App Setting  
-   DEPLOYMENT_BRANCH.   
+   By default the app will take master as default branch.    
+   We can change that by using App Setting  Env variable DEPLOYMENT_BRANCH.   
    Create two branches for two slots. Dev Branch and Prod Branch for Prod Slot.  
    For Dev Slot DEPLOYMENT_BRANCH=Dev  
    For Prod Slot DEPLOYMENT_BRANCH=Prod   
