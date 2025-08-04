@@ -14,6 +14,8 @@ azure-storage-blob
 azure-keyvault-secrets
 azure-identity
 azure-mgmt-compute
+azure-mgmt-resource
+azure-mgmt-network
 google-compute-engine
 google-cloud-dns
 google-cloud-appengine-admin
