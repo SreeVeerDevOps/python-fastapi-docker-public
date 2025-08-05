@@ -55,14 +55,18 @@ def azure_listrg(request: Request):
 
 @router.get("/listvnet", tags=["Azure"])
 def azure_listvnet(request: Request):
+  vnet_rg_list = []
+  vnet_cidrs = []
   for vnet in network_client.virtual_networks.list_all():
-   vnet_id = vnet.id
-   print(vnet_id)
-   rg_name = vnet_id.split('/')[4]
+   vnet_name_list = [ vnet.name for vnet in network_client.virtual_networks.list_all() ] 
+   vnet_ids = [ vnet.id for vnet in network_client.virtual_networks.list_all() ]
+   net_rg_list = [ vnet.split('/')[4] for vnet in vnet_ids ]
    address_space = vnet.address_space
-   print(address_space)
-   vnet_cidr = address_space.address_prefixes
-   print(rg_name)
-   print(vnet.name)
-   #print(vnet.vnet_cidr)
-   print("*"*90)
+   vnet_cidrs.append(address_space.address_prefixes[0])
+  print(vnet_name_list)
+  print(net_rg_list)
+  print(vnet_cidrs)
+  for a, b, c in zip(vnet_name_list, vnet_cidrs, net_rg_list):
+   print(a,b,c)
+  data = zip(vnet_name_list, vnet_cidrs, net_rg_list)
+  return templates.TemplateResponse("vnet.html", {"request": request, "subscription_id": subscription_id, "subscription_name": subscription_name, "name": "Resource Group Information For Subscription",  "data": data})

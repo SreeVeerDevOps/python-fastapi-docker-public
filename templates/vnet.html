@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bootstrap Sample</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <center> <h1>{{ name }}</h1> </center>
+        <center> <h1>{{ subscription_id }}</h1> </center>
+        <center> <h1>{{ subscription_name }}</h1> </center>
+<table class="table">
+    <tr>
+    <th>S.No</th>
+    <th>vNET Name</th>
+    <th>vNET Address Space</th>
+    <th>vNET Resource Group</th>
+    </tr>
+    <tr>
+    {% for vnet_name,vnet_address_space,vnet_rg_name in data %}
+    {# https://stackoverflow.com/questions/27035728/flask-cannot-import-enumerate-undefinederror-enumerate-is-undefined #}
+    <td>{{ loop.index0 }}</td>
+    <td>{{ vnet_name }}</td>
+    <td>{{ vnet_address_space }}</td>
+    <td>{{ vnet_rg_name }}</td>
+    </tr>
+    {% endfor %}
+</table>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
