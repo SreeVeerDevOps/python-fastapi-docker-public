@@ -13,7 +13,12 @@ uvicorn main:app --host 0.0.0.0 --port 8001 --reload &
 
 ## Deploying To Azure App Services:
 1. Create branch azb48-appsvc-dev  and Download zip https://github.com/SreeVeerDevOps/python-fastapi-docker-public.git to local.   
-
+   Update KV and Secrets in files routers/*.py files.
+   Secrets which needed to be created are:
+   - aws-access-key
+   - aws-secret-key
+   - subscription-name
+   - subscriptionid
 2. Deploy new azure appservice with Python 3.10 platform.  
 
 3. Once deployed go to Configuration -> Startup Command and give as below  
