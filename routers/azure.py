@@ -50,7 +50,7 @@ def azure_listrg(request: Request):
   group_list = [ group.name for group in resource_client.resource_groups.list()]
   group_loc = [ group.location for group in resource_client.resource_groups.list()]
   rg_dict   = dict(zip(group_list, group_loc))
-  return templates.TemplateResponse("rg.html", {"request": request, "subscription_id": subscription_id, "subscription_name": subscription_name, "name": "Resource Group Information For Subscription",  "rg_dict": rg_dict})
+  return templates.TemplateResponse("rg.html", {"request": request, "subscription_id": subscription_id, "subscription_name": subscription_name, "name": "Resource Group Information",  "rg_dict": rg_dict})
 
 
 @router.get("/listvnet", tags=["Azure"])
@@ -69,4 +69,4 @@ def azure_listvnet(request: Request):
   for a, b, c in zip(vnet_name_list, vnet_cidrs, net_rg_list):
    print(a,b,c)
   data = zip(vnet_name_list, vnet_cidrs, net_rg_list)
-  return templates.TemplateResponse("vnet.html", {"request": request, "subscription_id": subscription_id, "subscription_name": subscription_name, "name": "Resource Group Information For Subscription",  "data": data})
+  return templates.TemplateResponse("vnet.html", {"request": request, "subscription_id": subscription_id, "subscription_name": subscription_name, "name": "Virtual Networks Information",  "data": data})
