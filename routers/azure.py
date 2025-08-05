@@ -17,6 +17,7 @@ from azure.storage.blob.aio import BlobServiceClient
 from azure.mgmt.compute import ComputeManagementClient
 from azure.mgmt.resource import ResourceManagementClient
 from azure.mgmt.network import NetworkManagementClient
+from azure.mgmt.storage import StorageManagementClient
 from platform import python_version
 
 key_vault_name = "blueboxvault"
@@ -34,6 +35,7 @@ subscription_id = retrieved_sub_id.value
 subscription_name = retrieved_sub_name.value
 resource_client = ResourceManagementClient(credential, retrieved_sub_id.value)
 network_client = NetworkManagementClient(credential, retrieved_sub_id.value)
+storage_client = StorageManagementClient(credential, retrieved_sub_id.value)
 router = APIRouter()
 
 templates = Jinja2Templates(directory="templates")
@@ -70,3 +72,22 @@ def azure_listvnet(request: Request):
    print(a,b,c)
   data = zip(vnet_name_list, vnet_cidrs, net_rg_list)
   return templates.TemplateResponse("vnet.html", {"request": request, "subscription_id": subscription_id, "subscription_name": subscription_name, "name": "Virtual Networks Information",  "data": data})
+
+
+@router.get("/listsa", tags=["Azure"])
+def azure_list_sa(request: Request):
+  sa_sku = []
+  storage_accounts = storage_client.storage_accounts.list()
+  sa_accounts_name = [ account.name for account in storage_client.storage_accounts.list()]
+  sa_accounts_loc = [ account.location for account in storage_client.storage_accounts.list()]
+  for accounts in storage_client.storage_accounts.list():
+    sku = accounts.sku
+    sa_sku.append(sku.name)
+  print(sa_accounts_name)
+  print(sa_accounts_loc)
+  print(sa_sku)
+  for a, b, c in zip(sa_accounts_name, sa_accounts_loc, sa_sku):
+   print(a,b,c)
+  data = zip(sa_accounts_name, sa_accounts_loc, sa_sku)
+  return templates.TemplateResponse("storage_accounts.html", {"request": request, "subscription_id": subscription_id, "subscription_name": subscription_name, "name": "Storage Account Information",  "data": data})
+   

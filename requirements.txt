@@ -16,6 +16,7 @@ azure-identity
 azure-mgmt-compute
 azure-mgmt-resource
 azure-mgmt-network
+azure-mgmt-storage
 google-compute-engine
 google-cloud-dns
 google-cloud-appengine-admin
