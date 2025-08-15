@@ -1,6 +1,6 @@
 name: Trigger auto deployment for fastapiapp
 
-# When this action will be executed
+# When this action will be executedd
 on:
   # Automatically trigger it when detected changes in repo
   push:
