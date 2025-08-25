@@ -54,5 +54,6 @@ app.include_router(awsrawoutput.router)
 app.include_router(aws.router)
 app.include_router(azure.router)
 app.include_router(pokemon.router)
+app.include_router(aws-post-delete.router)
 
     
