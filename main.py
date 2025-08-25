@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Request, UploadFile
 import uvicorn
 import requests, socket, platform
-from routers import aws, azure, pokemon, awsrawoutput, aws-post-delete
+from routers import aws, azure, pokemon, awsrawoutput, aws_post_delete
 from fastapi.templating import Jinja2Templates
 import boto3
 import json
@@ -54,6 +54,6 @@ app.include_router(awsrawoutput.router)
 app.include_router(aws.router)
 app.include_router(azure.router)
 app.include_router(pokemon.router)
-app.include_router(aws-post-delete.router)
+app.include_router(aws_post_delete.router)
 
     
