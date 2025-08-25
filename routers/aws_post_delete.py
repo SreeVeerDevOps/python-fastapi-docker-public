@@ -80,3 +80,22 @@ def list_all_email():
         return {"items": ids}
     except ClientError as e:
         raise HTTPException(status_code=500, detail=f"Failed to scan table: {e.response['Error']['Message']}")
+
+@router.delete("/deleteall/")
+def delete_all_items():
+    try:
+        # Scan to get all items
+        response = table.scan()
+        items = response.get('Items', [])
+
+        # Batch delete items using primary key(s)
+        with table.batch_writer() as batch:
+            for item in items:
+                # Extract the primary key(s) from item
+                # Assumes 'id' is the partition key, adjust keys if you have a composite key
+                key = {'id': item['id']}
+                batch.delete_item(Key=key)
+
+        return {"message": f"Deleted {len(items)} items successfully."}
+    except ClientError as e:
+        raise HTTPException(status_code=500, detail=f"Failed to delete items: {e.response['Error']['Message']}")
