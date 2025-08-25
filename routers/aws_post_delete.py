@@ -19,7 +19,7 @@ def post_health():
     return 'All Is Well With Post File....'
    
 
-@router.post("/items/")
+@router.post("/items/", tags=["AWS-POST-DELETE"])
 def create_item(item: Item):
     return item
 
