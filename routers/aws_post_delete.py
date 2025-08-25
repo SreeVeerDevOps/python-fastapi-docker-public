@@ -96,6 +96,6 @@ def delete_all_items():
                 key = {'id': item['id']}
                 batch.delete_item(Key=key)
 
-        return {"message": f"Deleted {len(items)} items successfully and deleted items are:","Items": items}
+        return {"message": f"Deleted {len(items)} items successfully and deleted items are:","The Deleted Items Are": items}
     except ClientError as e:
         raise HTTPException(status_code=500, detail=f"Failed to delete items: {e.response['Error']['Message']}")
