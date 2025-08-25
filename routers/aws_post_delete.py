@@ -17,7 +17,7 @@ class Item(BaseModel):
 
 # Initialize boto3 DynamoDB resource and table
 dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
-table = dynamodb.Table('fastapidemotable')
+table = dynamodb.Table('fastapidemotable001')
 
 @router.post("/items/fake/")
 def create_fake_item():
