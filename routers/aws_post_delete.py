@@ -19,7 +19,7 @@ class Item(BaseModel):
 dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
 table = dynamodb.Table('fastapidemotable')
 
-@app.post("/items/fake/")
+@router.post("/items/fake/")
 def create_fake_item():
     # Generate fake item data
     item = {
@@ -36,7 +36,7 @@ def create_fake_item():
     except ClientError as e:
         raise HTTPException(status_code=400, detail=e.response['Error']['Message'])
 
-@app.get("/items/{item_id}")
+@router.get("/items/{item_id}")
 def get_item(item_id: str):
     try:
         # Query DynamoDB for item by id
