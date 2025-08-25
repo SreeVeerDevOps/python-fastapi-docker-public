@@ -25,12 +25,7 @@ def create_item(item: Item):
 
 @router.post("/items2/", tags=["AWS-POST-DELETE"])
 def create_item2(item: Item):
-    keys = []
-    values = []
-    for k,v in item.items():
-        keys.append(k)
-        values.append(v)
-    return keys
+    return type(item)
 
 @router.get('/post/certs/{region}', tags=["AWS-RAW"])
 def get_certs(request: Request, region: str):
