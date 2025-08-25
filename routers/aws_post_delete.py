@@ -47,3 +47,13 @@ def get_item(item_id: str):
         return item
     except ClientError as e:
         raise HTTPException(status_code=400, detail=e.response['Error']['Message'])
+
+@router.get("/items/")
+def list_all_items():
+    try:
+        # Use scan to retrieve all items
+        response = table.scan()
+        items = response.get('Items', [])
+        return {"items": items}
+    except ClientError as e:
+        raise HTTPException(status_code=500, detail=f"Failed to scan table: {e.response['Error']['Message']}")

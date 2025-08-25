@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>FastAPI DynamoDB Example</title>
+</head>
+<body>
+    <h2>Create Fake Item</h2>
+    <button id="create-fake-btn">Create Fake Item</button>
+    <pre id="create-result"></pre>
+
+    <h2>Get Item by ID</h2>
+    <input type="text" id="item-id-input" placeholder="Enter Item ID" />
+    <button id="get-item-btn">Get Item</button>
+    <pre id="get-result"></pre>
+
+    <script>
+        const apiBase = "http://4.188.244.50:8001";
+
+        document.getElementById('create-fake-btn').addEventListener('click', async () => {
+            try {
+                const response = await fetch(`${apiBase}/items/fake/`, {
+                    method: 'POST',
+                });
+                const data = await response.json();
+                document.getElementById('create-result').textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('create-result').textContent = `Error: ${error.message}`;
+            }
+        });
+
+        document.getElementById('get-item-btn').addEventListener('click', async () => {
+            const itemId = document.getElementById('item-id-input').value.trim();
+            if (!itemId) {
+                alert("Please enter an Item ID");
+                return;
+            }
+            try {
+                const response = await fetch(`${apiBase}/items/${encodeURIComponent(itemId)}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                document.getElementById('get-result').textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('get-result').textContent = `Error: ${error.message}`;
+            }
+        });
+    </script>
+</body>
+</html>
