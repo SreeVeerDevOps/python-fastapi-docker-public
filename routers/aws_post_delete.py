@@ -20,7 +20,7 @@ dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
 table = dynamodb.Table('fastapidemotable001')
 
 @router.post("/items/fake/", tags=["DynamoDB"])
-def create_fake_item():
+def create_fake_item(name:str,email:str,address:str,phone:str):
     # Generate fake item data
     item = {
         "id": fake.unique.uuid4(),
