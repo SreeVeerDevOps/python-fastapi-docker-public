@@ -37,13 +37,13 @@ def create_fake_item():
         raise HTTPException(status_code=400, detail=e.response['Error']['Message'])
 
 @router.post("/items/np/", tags=["DynamoDB"])
-def create_fake_new_person(id: str, name: str, email: str, address: str, phone: str):
+def create_fake_new_person():
     # Generate fake item data
     item = {
-        "id": id,
+        "id": fake.unique.uuid4(),
         "name": name,
-        "email": email,
-        "address": address,
+        "email": email
+        "address": address
         "phone": phone
     }
     try:
