@@ -43,14 +43,13 @@ def create_item_np(item: Item):
     print(type(item))
     item_dict = item.__dict__
     print(item_dict)
-    table.put_item(Item=item_dict)
-    return item_dict
-    # try:
-    #     # Post fake item to DynamoDB
-    #     table.put_item(Item=item)
-    #     return {"message": "Fake item created", "item": item}
-    # except ClientError as e:
-    #     raise HTTPException(status_code=400, detail=e.response['Error']['Message'])
+    #return item_dict
+    try:
+        # Post fake item to DynamoDB
+        table.put_item(Item=item_dict)
+        return {"message": "Fake item created", "item": item}
+    except ClientError as e:
+        raise HTTPException(status_code=400, detail=e.response['Error']['Message'])
 
 @router.get("/items/{item_id}", tags=["DynamoDB"])
 def get_item(item_id: str):
