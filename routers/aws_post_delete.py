@@ -43,6 +43,7 @@ def create_item_np(item: Item):
     print(type(item))
     x = json.dumps(item, default=str)
     print(x)
+    table.put_item(Item=x)
     return x
     # try:
     #     # Post fake item to DynamoDB
