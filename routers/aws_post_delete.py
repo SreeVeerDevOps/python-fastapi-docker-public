@@ -42,8 +42,8 @@ def create_fake_new_person():
     item = {
         "id": fake.unique.uuid4(),
         "name": name,
-        "email": email
-        "address": address
+        "email": email,
+        "address": address,
         "phone": phone
     }
     try:
