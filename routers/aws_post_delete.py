@@ -38,7 +38,7 @@ def create_fake_item():
 
 @router.post("/items/np/", tags=["DynamoDB"])
 def create_fake_new_person(request: Request):
-    json_body = await request.json()
+    json_body = request.json()
     return {"received_data": json_body}
     # Generate fake item data
     # try:
