@@ -40,10 +40,10 @@ def create_fake_item():
 def create_fake_new_person(id: str, name: str, email: str, address: str, phone: str):
     # Generate fake item data
     item = {
-        "id": id
-        "name": name
-        "email": email
-        "address": address
+        "id": id,
+        "name": name,
+        "email": email,
+        "address": address,
         "phone": phone
     }
     try:
