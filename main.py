@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Request, UploadFile
+from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 import requests, socket, platform
 from routers import aws, azure, pokemon, awsrawoutput, aws_post_delete
