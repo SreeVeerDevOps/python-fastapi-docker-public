@@ -42,7 +42,7 @@ def create_item_np(item: Item):
     print(item)
     print(type(item))
     item_dict = item.__dict__
-    print(x)
+    print(item_dict)
     table.put_item(Item=item_dict)
     return item_dict
     # try:
