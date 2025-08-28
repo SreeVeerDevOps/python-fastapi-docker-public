@@ -19,7 +19,7 @@ class Item(BaseModel):
 dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
 table = dynamodb.Table('fastapidemotable001')
 
-@router.post("/items/fake/")
+@router.post("/items/fake/", tags=["DynamoDB"])
 def create_fake_item():
     # Generate fake item data
     item = {
@@ -36,7 +36,7 @@ def create_fake_item():
     except ClientError as e:
         raise HTTPException(status_code=400, detail=e.response['Error']['Message'])
 
-@router.get("/items/{item_id}")
+@router.get("/items/{item_id}", tags=["DynamoDB"])
 def get_item(item_id: str):
     try:
         # Query DynamoDB for item by id
@@ -48,7 +48,7 @@ def get_item(item_id: str):
     except ClientError as e:
         raise HTTPException(status_code=400, detail=e.response['Error']['Message'])
 
-@router.get("/items/")
+@router.get("/items/", tags=["DynamoDB"])
 def list_all_items():
     try:
         # Use scan to retrieve all items
@@ -58,7 +58,7 @@ def list_all_items():
     except ClientError as e:
         raise HTTPException(status_code=500, detail=f"Failed to scan table: {e.response['Error']['Message']}")
 
-@router.get("/allid/")
+@router.get("/allid/", tags=["DynamoDB"])
 def list_all_items():
     try:
         # Use scan to retrieve all items
@@ -70,7 +70,7 @@ def list_all_items():
         raise HTTPException(status_code=500, detail=f"Failed to scan table: {e.response['Error']['Message']}")
 
 
-@router.get("/allemail/")
+@router.get("/allemail/", tags=["DynamoDB"])
 def list_all_email():
     try:
         # Use scan to retrieve all items
@@ -81,7 +81,7 @@ def list_all_email():
     except ClientError as e:
         raise HTTPException(status_code=500, detail=f"Failed to scan table: {e.response['Error']['Message']}")
 
-@router.delete("/deleteall/")
+@router.delete("/deleteall/", tags=["DynamoDB"])
 def delete_all_items():
     try:
         # Scan to get all items
