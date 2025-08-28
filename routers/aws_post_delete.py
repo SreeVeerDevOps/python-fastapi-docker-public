@@ -20,7 +20,7 @@ dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
 table = dynamodb.Table('fastapidemotable001')
 
 @router.post("/items/fake/", tags=["DynamoDB"])
-def create_fake_item(name:str,email:str,address:str,phone:str):
+def create_fake_item():
     # Generate fake item data
     item = {
         "id": fake.unique.uuid4(),
@@ -37,7 +37,7 @@ def create_fake_item(name:str,email:str,address:str,phone:str):
         raise HTTPException(status_code=400, detail=e.response['Error']['Message'])
 
 @router.post("/items/np/", tags=["DynamoDB"])
-def create_fake_new_person():
+def create_fake_new_person(name:str,email:str,address:str,phone:str):
     # Generate fake item data
     item = {
         "id": fake.unique.uuid4(),
