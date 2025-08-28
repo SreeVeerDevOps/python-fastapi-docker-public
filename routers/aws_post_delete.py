@@ -41,7 +41,7 @@ def create_fake_item():
 def create_item_np(item: Item):
     print(item)
     print(type(item))
-    x = json.dumps(item)
+    x = json.dumps(item, default=str)
     print(x)
     return x
     # try:
