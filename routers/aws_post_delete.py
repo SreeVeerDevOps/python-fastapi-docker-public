@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from faker import Faker
 import boto3
 from botocore.exceptions import ClientError
+import json
 
 router = APIRouter()
 fake = Faker()
@@ -40,7 +41,9 @@ def create_fake_item():
 def create_item_np(item: Item):
     print(item)
     print(type(item))
-    return item
+    x = json.dumps(item)
+    print(x)
+    return x
     # try:
     #     # Post fake item to DynamoDB
     #     table.put_item(Item=item)
