@@ -20,6 +20,16 @@ load_dotenv()
 
 app = FastAPI()
 
+origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 con_name = os.getenv("HOSTNAME")
 b_name = os.getenv("DEPLOYMENT_BRANCH")
 app_name = os.getenv("APP_NAME")
