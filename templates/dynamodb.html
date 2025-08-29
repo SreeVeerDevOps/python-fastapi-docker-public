@@ -1,52 +1,245 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>FastAPI DynamoDB Example</title>
+    <title>Post Item to FastAPI</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-ENjdO4Dr2bkBIFxQpeo1rZqPyMtbb6VZ/4rR5f9RYE+EuwlN6RRKKy0QxQ+0Og3g" crossorigin="anonymous" />
 </head>
-<body>
-    <h2>Create Fake Item</h2>
-    <button id="create-fake-btn">Create Fake Item</button>
-    <pre id="create-result"></pre>
 
-    <h2>Get Item by ID</h2>
-    <input type="text" id="item-id-input" placeholder="Enter Item ID" />
-    <button id="get-item-btn">Get Item</button>
-    <pre id="get-result"></pre>
+<body>
+    <div class="container my-5">
+        <h2>Create Item</h2>
+        <form id="itemForm" class="mb-4 needs-validation" novalidate>
+            <div class="mb-3">
+                <label for="id" class="form-label">ID:</label>
+                <input type="text" id="id" name="id" class="form-control" required />
+            </div>
+
+            <div class="mb-3">
+                <label for="name" class="form-label">Name:</label>
+                <input type="text" id="name" name="name" class="form-control" required />
+            </div>
+
+            <div class="mb-3">
+                <label for="description" class="form-label">Description:</label>
+                <input type="text" id="description" name="description" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label for="email" class="form-label">Email:</label>
+                <input type="email" id="email" name="email" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label for="address" class="form-label">Address:</label>
+                <input type="text" id="address" name="address" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label for="phone" class="form-label">Phone:</label>
+                <input type="tel" id="phone" name="phone" class="form-control" />
+            </div>
+
+            <button type="submit" class="btn btn-success">Submit</button>
+        </form>
+    </div>
+
+    <div class="container my-5">
+        <h2>All Items</h2>
+        <button id="list-items-btn" class="btn btn-primary mb-3">Load All Items</button>
+        <pre id="items-result" class="bg-light p-3 border rounded" style="white-space: pre-wrap;"></pre>
+    </div>
+
+    <section class="mb-5">
+        <h2>Create Fake Item</h2>
+        <div class="d-flex gap-2 mb-3">
+            <button id="create-fake-btn" type="button" class="btn btn-primary">Create Fake Item</button>
+        </div>
+        <pre id="create-result" class="bg-light p-3 border rounded" aria-live="polite"></pre>
+    </section>
+    <section class="mb-5">
+        <h2>Delete All Items</h2>
+        <div class="d-flex gap-2 mb-3">
+            <button id="delete-all-btn" type="button" class="btn btn-danger">Delete All Items</button>
+        </div>
+        <pre id="create-result" class="bg-light p-3 border rounded" aria-live="polite"></pre>
+    </section>
+
+    <section>
+        <h2>Get Item by ID</h2>
+        <div class="input-group mb-3">
+            <input type="text" id="item-id-input" class="form-control" placeholder="Enter Item ID"
+                aria-label="Item ID" />
+            <button id="get-item-btn" type="button" class="btn btn-secondary">Get Item</button>
+        </div>
+        <pre id="get-result" class="bg-light p-3 border rounded" aria-live="polite"></pre>
+    </section>
+    </div>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-qGzGf+xlIULHnzIf/6JlR33EEjbKR/5ipQQ6tAGd3jEBHNDvn60748yUuP6K+Am4"
+        crossorigin="anonymous"></script>
 
     <script>
-        const apiBase = "http://4.188.244.50:8001";
+        const apiBase = "http://4.188.244.50:8002";
 
-        document.getElementById('create-fake-btn').addEventListener('click', async () => {
+        // FORM SUBMISSION
+        (() => {
+            'use strict';
+            const form = document.getElementById('itemForm');
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+
+                if (!form.checkValidity()) {
+                    form.classList.add('was-validated');
+                    return;
+                }
+
+                const data = {
+                    id: form.id.value.trim(),
+                    name: form.name.value.trim(),
+                    description: form.description.value.trim(),
+                    email: form.email.value.trim(),
+                    address: form.address.value.trim(),
+                    phone: form.phone.value.trim(),
+                };
+
+                try {
+                    const response = await fetch(`${apiBase}/items/np/`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data),
+                    });
+
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        throw new Error(`Error ${response.status}: ${errorText || response.statusText}`);
+                    }
+
+                    const result = await response.json();
+                    alert(`Success:\n${JSON.stringify(result, null, 2)}`);
+                    form.reset();
+                    form.classList.remove('was-validated');
+                } catch (error) {
+                    alert(`Failed to submit item:\n${error.message}`);
+                }
+            }, false);
+        })();
+
+        //LIST ALL ITEMS IN THE DYNAMODB TABLE
+          document.getElementById('list-items-btn').addEventListener('click', async () => {
+            const resultEl = document.getElementById('items-result');
+            resultEl.textContent = "Loading...";
             try {
-                const response = await fetch(`${apiBase}/items/fake/`, {
-                    method: 'POST',
-                });
-                const data = await response.json();
-                document.getElementById('create-result').textContent = JSON.stringify(data, null, 2);
+              const response = await fetch(`${apiBase}/items/`);
+              if (!response.ok) {
+                const errText = await response.text();
+                throw new Error(`Error ${response.status}: ${errText || response.statusText}`);
+              }
+              const data = await response.json();
+          
+              // Pretty-print JSON for display
+              resultEl.textContent = JSON.stringify(data.items, null, 2);
+          
+              // Optional: You could create a table or cards from the items here for better UI
             } catch (error) {
-                document.getElementById('create-result').textContent = `Error: ${error.message}`;
+              resultEl.textContent = `Failed to load items:\n${error.message}`;
+            }
+          });
+
+        // HELPER to fetch JSON with error handling
+        async function fetchJSON(url, options = {}) {
+            const response = await fetch(url, options);
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`HTTP ${response.status}: ${errorText || response.statusText}`);
+            }
+            return response.json();
+        }
+
+        // async function deleteAllItems() {
+        //     const deleteAllEndpoint = "http://4.188.244.50:8002/deleteall/";
+
+        //     if (!confirm('Are you sure you want to delete all items? This action cannot be undone.')) {
+        //         return;
+        //     }
+
+        //     try {
+        //         const response = await fetch(deleteAllEndpoint, {
+        //             method: 'DELETE',
+        //             headers: {
+        //                 'Content-Type': 'application/json',
+        //             },
+        //         });
+
+        //         if (!response.ok) {
+        //             const errorText = await response.text();
+        //             throw new Error(`HTTP ${response.status}: ${errorText || response.statusText}`);
+        //         }
+
+        //         const result = await response.json();
+        //         alert(`Success:\nDeleted ${result.message || ''}\nItems:\n${JSON.stringify(result["The Deleted Items Are"], null, 2)}`);
+        //     } catch (error) {
+        //         alert(`Failed to delete all items:\n${error.message}`);
+        //     }
+        // }
+
+        // CACHE DOM elements
+        const createBtn = document.getElementById('create-fake-btn');
+        const deleteAllBtn = document.getElementById('delete-all-btn');
+        const createResult = document.getElementById('create-result');
+        const getBtn = document.getElementById('get-item-btn');
+        const getResult = document.getElementById('get-result');
+        const itemIdInput = document.getElementById('item-id-input');
+
+        // CREATE FAKE ITEM
+        createBtn.addEventListener('click', async () => {
+            createResult.textContent = 'Loading...';
+            try {
+                const data = await fetchJSON(`${apiBase}/items/fake/`, { method: 'POST' });
+                createResult.textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                createResult.textContent = `Error: ${error.message}`;
             }
         });
 
-        document.getElementById('get-item-btn').addEventListener('click', async () => {
-            const itemId = document.getElementById('item-id-input').value.trim();
+        // DELETE ALL ITEMS
+        deleteAllBtn.addEventListener('click', async () => {
+            if (!confirm('Are you sure you want to delete all items? This action cannot be undone.')) {
+                return;
+            }
+            createResult.textContent = 'Deleting all items...';
+            try {
+                await fetchJSON(`${apiBase}/deleteall/`, { method: 'DELETE' });
+                createResult.textContent = 'All items deleted successfully.';
+            } catch (error) {
+                createResult.textContent = `Error: ${error.message}`;
+            }
+        });
+
+        // GET ITEM BY ID
+        getBtn.addEventListener('click', async () => {
+            const itemId = itemIdInput.value.trim();
             if (!itemId) {
                 alert("Please enter an Item ID");
                 return;
             }
+            getResult.textContent = 'Loading...';
             try {
-                const response = await fetch(`${apiBase}/items/${encodeURIComponent(itemId)}`);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const data = await response.json();
-                document.getElementById('get-result').textContent = JSON.stringify(data, null, 2);
+                const data = await fetchJSON(`${apiBase}/items/${encodeURIComponent(itemId)}`);
+                getResult.textContent = JSON.stringify(data, null, 2);
             } catch (error) {
-                document.getElementById('get-result').textContent = `Error: ${error.message}`;
+                getResult.textContent = `Error: ${error.message}`;
             }
         });
+        document.getElementById('delete-all-btn').addEventListener('click', deleteAllItems);
     </script>
 </body>
+
 </html>
