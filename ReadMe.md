@@ -51,4 +51,4 @@ https://azb45fastapi-dev.scm.azurewebsites.net/ - OLD
 https://azb45fastapi-dev.scm.azurewebsites.net/newui/ - NEW 
 
 
-Sometimes it takes few minitues to get the app up and running.
+Sometimes it takes few minitues to get the app up and running...
