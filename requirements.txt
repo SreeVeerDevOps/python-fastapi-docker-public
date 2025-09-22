@@ -23,3 +23,5 @@ pymongo
 opentelemetry-api
 opentelemetry-sdk
 azure-monitor-opentelemetry
+prometheus-fastapi-instrumentator
+
