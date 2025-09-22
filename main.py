@@ -15,10 +15,13 @@ from azure.identity import DefaultAzureCredential
 from azure.storage.blob.aio import BlobServiceClient
 from azure.mgmt.compute import ComputeManagementClient
 from platform import python_version
+from prometheus_fastapi_instrumentator import Instrumentator
 
 load_dotenv()
 
 app = FastAPI()
+
+Instrumentator().instrument(app).expose(app)
 
 con_name = os.getenv("HOSTNAME")
 b_name = os.getenv("DEPLOYMENT_BRANCH")
@@ -56,3 +59,4 @@ app.include_router(azure.router)
 app.include_router(pokemon.router)
 
     
+
