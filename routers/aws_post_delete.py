@@ -51,6 +51,44 @@ def create_item_np(item: Item):
     except ClientError as e:
         raise HTTPException(status_code=400, detail=e.response['Error']['Message'])
 
+# Define Pydantic model for update request body
+class ItemUpdate(BaseModel):
+    name: str = None
+    description: str = None
+    email: str = None
+    address: str = None
+    phone: str = None
+
+@router.put("/items/{item_id}")
+def update_item(item_id: str, item_update: ItemUpdate):
+    try:
+        # Build UpdateExpression, ExpressionAttributeValues dynamically based on provided fields
+        update_expression = []
+        expression_attribute_values = {}
+        expression_attribute_names = {}
+
+        for key, value in item_update.dict(exclude_unset=True).items():
+            update_expression.append(f"#{key} = :{key}")
+            expression_attribute_names[f"#{key}"] = key
+            expression_attribute_values[f":{key}"] = value
+
+        if not update_expression:
+            return {"message": "No fields to update."}
+
+        update_expr = "SET " + ", ".join(update_expression)
+
+        response = table.update_item(
+            Key={"id": item_id},  # Assuming 'id' is the primary key attribute name
+            UpdateExpression=update_expr,
+            ExpressionAttributeNames=expression_attribute_names,
+            ExpressionAttributeValues=expression_attribute_values,
+            ReturnValues="ALL_NEW"  # Returns the updated item attributes
+        )
+        return {"updated_item": response.get("Attributes")}
+
+    except ClientError as e:
+        raise HTTPException(status_code=400, detail=e.response['Error']['Message'])
+
 @router.get("/items/{item_id}", tags=["DynamoDB"])
 def get_item(item_id: str):
     try:
