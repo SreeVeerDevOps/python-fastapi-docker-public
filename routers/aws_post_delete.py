@@ -59,7 +59,7 @@ class ItemUpdate(BaseModel):
     address: str = None
     phone: str = None
 
-@router.put("/items/{item_id}",tags=["DynamoDB"]))
+@router.put("/items/{item_id}",tags=["DynamoDB"])
 def update_item(item_id: str, item_update: ItemUpdate):
     try:
         # Build UpdateExpression, ExpressionAttributeValues dynamically based on provided fields
