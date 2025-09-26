@@ -24,4 +24,7 @@ opentelemetry-api
 opentelemetry-sdk
 azure-monitor-opentelemetry
 prometheus-fastapi-instrumentator
+opentelemetry-distro 
+opentelemetry-exporter-otlp 
+opentelemetry-instrumentation-fastapi
 
