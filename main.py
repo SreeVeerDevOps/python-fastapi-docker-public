@@ -16,12 +16,25 @@ from azure.storage.blob.aio import BlobServiceClient
 from azure.mgmt.compute import ComputeManagementClient
 from platform import python_version
 from prometheus_fastapi_instrumentator import Instrumentator
+from opentelemetry import trace
+from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.sdk.trace.export import ConsoleSpanExporter, SimpleSpanProcessor
+from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
+from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
+
+otlp_exporter = OTLPSpanExporter(endpoint="http://localhost:4317", insecure=True)
+span_processor = SimpleSpanProcessor(otlp_exporter)
+trace.set_tracer_provider(TracerProvider())
+trace.get_tracer_provider().add_span_processor(span_processor)
 
 load_dotenv()
 
 app = FastAPI()
 
 Instrumentator().instrument(app).expose(app)
+#FastAPIInstrumentor.instrument(app)
+FastAPIInstrumentor.instrument_app(app)
+print(dir(FastAPIInstrumentor))
 
 con_name = os.getenv("HOSTNAME")
 b_name = os.getenv("DEPLOYMENT_BRANCH")
