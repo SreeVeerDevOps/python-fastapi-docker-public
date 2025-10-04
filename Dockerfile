@@ -18,3 +18,6 @@ RUN apt-get update && \
 EXPOSE 80
 ENTRYPOINT ["uvicorn", "main:app", "--host", "0.0.0.0"]
 CMD ["--port", "80"]
+
+#This updated Dockerfile has reduced container image from 1.69GB to 966MB.
+
