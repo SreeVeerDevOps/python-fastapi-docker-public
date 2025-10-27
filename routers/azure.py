@@ -30,7 +30,8 @@ client = SecretClient(vault_url=key_vault_uri, credential=credential)
 retrieved_sub_id = client.get_secret(subscription_id)
 retrieved_sub_name = client.get_secret('subscription-name')
 os.environ['AZURE_SUBSCRIPTION_ID'] = retrieved_sub_id.value
-print(retrieved_sub_id.value)
+print(f'The retrieved Value From Key Vault For Subscription ID is {retrieved_sub_id.value}.')
+print(f'The retrieved Value From Key Vault For Subscription Name is {retrieved_sub_name.value}.')
 subscription_id = retrieved_sub_id.value
 subscription_name = retrieved_sub_name.value
 resource_client = ResourceManagementClient(credential, retrieved_sub_id.value)
