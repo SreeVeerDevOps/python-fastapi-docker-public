@@ -16,13 +16,13 @@ from azure.identity import DefaultAzureCredential
 from azure.storage.blob.aio import BlobServiceClient
 from azure.mgmt.compute import ComputeManagementClient
 from platform import python_version
-from prometheus_fastapi_instrumentator import Instrumentator
+#from prometheus_fastapi_instrumentator import Instrumentator
 
 load_dotenv()
 
 app = FastAPI()
 
-Instrumentator().instrument(app).expose(app)
+#Instrumentator().instrument(app).expose(app)
 
 origins = ["*"]
 
