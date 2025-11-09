@@ -20,8 +20,9 @@ google-cloud-appengine-admin
 mysql-connector-python
 SQLAlchemy
 pymongo
-opentelemetry-api
-opentelemetry-sdk==1.33.0
-azure-monitor-opentelemetry==1.8.1
-prometheus-fastapi-instrumentator
+#Commented below as its throwing dependency errors for AWSB72
+#opentelemetry-api
+#opentelemetry-sdk==1.33.0
+#azure-monitor-opentelemetry==1.8.1
+#prometheus-fastapi-instrumentator
 
