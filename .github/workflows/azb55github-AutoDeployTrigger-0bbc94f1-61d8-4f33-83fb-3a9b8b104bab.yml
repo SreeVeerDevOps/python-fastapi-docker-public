@@ -37,7 +37,7 @@ jobs:
           appSourcePath: ${{ github.workspace }}
           _dockerfilePathKey_: _dockerfilePath_
           _targetLabelKey_: _targetLabel_
-          registryUrl: 
+          registryUrl: azb55acr.azurecr.io
           registryUsername: ${{ secrets.AZB55GITHUB_REGISTRY_USERNAME }}
           registryPassword: ${{ secrets.AZB55GITHUB_REGISTRY_PASSWORD }}
           containerAppName: azb55github
