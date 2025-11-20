@@ -42,7 +42,7 @@ jobs:
           registryPassword: ${{ secrets.AZB55GITHUB_REGISTRY_PASSWORD }}
           containerAppName: azb55github
           resourceGroup: azb55containerapp
-          imageToBuild: default/[parameters('containerAppName')]:${{ github.sha }}
+          imageToBuild: azb55acr.azurecr.io/azb55fastapi::${{ github.sha }}
           _buildArgumentsKey_: |
             _buildArgumentsValues_
 
