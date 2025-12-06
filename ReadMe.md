@@ -9,7 +9,13 @@ rm -rf fastapi
 git clone https://github.com/SreeVeerDevOps/python-fastapi-docker-public.git fastapi      
 cd fastapi     
 pip3 install -r requirements.txt    
-uvicorn main:app --host 0.0.0.0 --port 8001 --reload &      
+uvicorn main:app --host 0.0.0.0 --port 8001 --reload &
+
+```
+uvicorn main:app --host 0.0.0.0 --port 443 \
+--ssl-keyfile  "/etc/letsencrypt/live/awsb73.xyz/privkey.pem" \
+--ssl-certfile  "/etc/letsencrypt/live/awsb73.xyz/fullchain.pem"
+```
 
 ## Deploying To Azure App Services:
 1. Create branch azb48-appsvc-dev  and Download zip https://github.com/SreeVeerDevOps/python-fastapi-docker-public.git to local.   
