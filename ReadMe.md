@@ -3,6 +3,12 @@ MAKE SURE YOU DONT ENABLE APPINSIGHTS FOR THE APPSERVICE AS ITS THROWING A IMPOR
 "ImportError: cannot import name 'AccessTokenInfo' from 'azure.core.credentials' (/agents/python/azure/core/credentials.py). Did you mean: 'AccessToken'?"
 https://github.com/Azure/azure-sdk-for-python/issues/37491
 
+## To Access KV With ClientID and ClientSecret
+export AZURE_CLIENT_ID="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+export AZURE_TENANT_ID="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+export AZURE_CLIENT_SECRET="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+export AZURE_SUBSCRIPTION_ID="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+
 ## Bootstrap Code For Linux 
 #!/bin/bash    
 rm -rf fastapi    
