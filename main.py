@@ -26,6 +26,7 @@ Instrumentator().instrument(app).expose(app)
 con_name = os.getenv("HOSTNAME")
 b_name = os.getenv("DEPLOYMENT_BRANCH")
 app_name = os.getenv("APP_NAME")
+app_version = os.getenv("APP_VERSION")
 if b_name:
     branch_name = b_name
 else:
@@ -35,6 +36,11 @@ if app_name is None:
     app_name = "FASTAPI-DEMO-APP-DEFAULT"
 else:
     app_name = app_name
+
+if app_version is None:
+    app_version = "NO_VERSION_PROVIDED"
+else:
+    app_version = app_version
 
 python_version = os.getenv("PYTHON_VERSION")
 
@@ -47,6 +53,7 @@ def homepage(request: Request):
     return templates.TemplateResponse("index.html", {
         "request": request, 
         "name": app_name,
+        "version": app_version,
         "container_id": con_name,
         "python_version": python_version,
         "IP": IP,
@@ -57,6 +64,3 @@ app.include_router(awsrawoutput.router)
 app.include_router(aws.router)
 app.include_router(azure.router)
 app.include_router(pokemon.router)
-
-    
-
