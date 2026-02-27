@@ -11,7 +11,8 @@ export AZURE_CLIENT_SECRET="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 export AZURE_SUBSCRIPTION_ID="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"   
 ```
 ## Bootstrap Code For Linux 
-#!/bin/bash    
+#!/bin/bash
+apt update && apt install -y python3-pip jq unzip net-tools
 rm -rf fastapi    
 git clone https://github.com/SreeVeerDevOps/python-fastapi-docker-public.git fastapi      
 cd fastapi     
