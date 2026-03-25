@@ -42,7 +42,8 @@ jobs:
           registryPassword: ${{ secrets.AZB57FASTAPI_REGISTRY_PASSWORD }}
           containerAppName: azb57fastapi
           resourceGroup: AZB57IAAC
-          imageToBuild: default/[parameters('containerAppName')]:${{ github.sha }}
+          #imageToBuild: default/[parameters('containerAppName')]:${{ github.sha }}
+          imageToBuild: azb5acr.azurecr.io/azb57fastapi:${{ github.sha }}
           _buildArgumentsKey_: |
             _buildArgumentsValues_
 
