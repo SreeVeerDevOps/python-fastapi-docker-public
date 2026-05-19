@@ -1,3 +1,11 @@
+# For Using Azure Code, create and provide reader access to service princial and export it as env variable
+```
+export AZURE_SUBSCRIPTION_ID='XXXXXXXXXXXXXXXXX'
+export AZURE_TENANT_ID='yyyyyyyyyyyyyyyyyyyy'
+export AZURE_CLIENT_ID='zzzzzzzzzzzzzzzzzzzz'
+export AZURE_CLIENT_SECRET='aaaaaaaaaaaaaaaaaaaaaaaaaa'
+```
+
 # Python FastAPI Application For Testing Azure AppService
 MAKE SURE YOU DONT ENABLE APPINSIGHTS FOR THE APPSERVICE AS ITS THROWING A IMPORT ERROR AS BELOW. FACED THIS WITH BATCH 50.
 "ImportError: cannot import name 'AccessTokenInfo' from 'azure.core.credentials' (/agents/python/azure/core/credentials.py). Did you mean: 'AccessToken'?"

@@ -24,4 +24,6 @@ opentelemetry-api
 opentelemetry-sdk
 azure-monitor-opentelemetry
 prometheus-fastapi-instrumentator
-
+azure-identity
+azure-mgmt-resource
+azure-mgmt-storage

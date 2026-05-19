@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Azure Virtual Machines</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #080c10; --border: rgba(255,255,255,0.07);
+      --accent: #00e5ff; --text: #e2e8f0; --muted: #64748b;
+      --card-bg: rgba(255,255,255,0.03);
+    }
+    body {
+      background: var(--bg); color: var(--text);
+      font-family: 'Syne', sans-serif; min-height: 100vh; overflow-x: hidden;
+    }
+    body::before {
+      content: ''; position: fixed; inset: 0;
+      background-image: linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px);
+      background-size: 48px 48px; pointer-events: none; z-index: 0;
+    }
+    .wrapper { position: relative; z-index: 1; max-width: 1060px; margin: 0 auto; padding: 52px 24px 80px; }
+
+    header { display: flex; align-items: center; gap: 14px; margin-bottom: 48px; animation: fadeDown 0.5s ease both; }
+    .back-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-family: 'Space Mono', monospace; font-size: 11px; color: var(--muted);
+      text-decoration: none; border: 1px solid var(--border); border-radius: 6px; padding: 6px 12px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .back-btn:hover { color: var(--accent); border-color: rgba(0,229,255,0.3); }
+    .header-divider { flex: 1; height: 1px; background: linear-gradient(90deg, var(--border), transparent); }
+    .badge {
+      font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.1em;
+      padding: 4px 10px; border-radius: 4px; text-transform: uppercase;
+      background: linear-gradient(135deg, rgba(0,120,212,0.25), rgba(0,120,212,0.1));
+      border: 1px solid rgba(0,120,212,0.4); color: #60a5fa;
+    }
+
+    .hero { margin-bottom: 40px; animation: fadeDown 0.5s 0.1s ease both; }
+    .hero-eyebrow { font-family: 'Space Mono', monospace; font-size: 11px; color: #f87171; letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 10px; }
+    .hero h1 { font-size: clamp(26px, 5vw, 42px); font-weight: 800; background: linear-gradient(135deg, #fff 40%, #f87171 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .hero-sub { margin-top: 8px; font-family: 'Space Mono', monospace; font-size: 11px; color: var(--muted); }
+
+    .stats-bar { display: flex; gap: 12px; margin-bottom: 28px; animation: fadeUp 0.5s 0.2s ease both; flex-wrap: wrap; }
+    .stat-pill {
+      background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px;
+      padding: 10px 18px; display: flex; flex-direction: column; gap: 2px;
+    }
+    .stat-pill .num { font-family: 'Space Mono', monospace; font-size: 22px; font-weight: 700; }
+    .stat-pill .lbl { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; }
+    .num-red { color: #f87171; }
+    .num-win { color: #60a5fa; }
+    .num-lin { color: #a3e635; }
+
+    /* Card grid for VMs */
+    .vm-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 14px; animation: fadeUp 0.5s 0.25s ease both;
+    }
+    .vm-card {
+      background: var(--card-bg); border: 1px solid var(--border); border-radius: 14px;
+      padding: 20px 22px; display: flex; flex-direction: column; gap: 14px;
+      transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+    }
+    .vm-card:hover { border-color: rgba(248,113,113,0.3); transform: translateY(-2px); box-shadow: 0 0 28px rgba(248,113,113,0.08); }
+    .vm-card-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+    .vm-name { font-family: 'Space Mono', monospace; font-size: 13px; color: #f87171; word-break: break-all; }
+    .vm-state { display: inline-flex; align-items: center; gap: 4px; font-family: 'Space Mono', monospace; font-size: 10px; padding: 3px 8px; border-radius: 4px; flex-shrink: 0; }
+    .state-succeeded { background: rgba(34,197,94,0.12); border: 1px solid rgba(34,197,94,0.3); color: #4ade80; }
+    .state-other { background: rgba(250,204,21,0.12); border: 1px solid rgba(250,204,21,0.3); color: #fbbf24; }
+    .dot { width: 6px; height: 6px; border-radius: 50%; }
+    .dot-green { background: #22c55e; box-shadow: 0 0 6px #22c55e; }
+    .dot-yellow { background: #eab308; }
+    .vm-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .vm-meta-item { display: flex; flex-direction: column; gap: 2px; }
+    .meta-label { font-family: 'Space Mono', monospace; font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+    .meta-value { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--text); }
+    .os-badge {
+      display: inline-block; font-size: 10px; padding: 2px 7px; border-radius: 4px;
+      font-family: 'Space Mono', monospace;
+    }
+    .os-windows { background: rgba(96,165,250,0.12); border: 1px solid rgba(96,165,250,0.3); color: #93c5fd; }
+    .os-linux   { background: rgba(163,230,53,0.12);  border: 1px solid rgba(163,230,53,0.3);  color: #bef264; }
+    .os-other   { background: rgba(255,255,255,0.04); border: 1px solid var(--border); color: var(--muted); }
+    .location-tag {
+      display: inline-block; font-family: 'Space Mono', monospace; font-size: 10px;
+      padding: 3px 8px; border-radius: 4px;
+      background: rgba(123,94,167,0.15); border: 1px solid rgba(123,94,167,0.3); color: #c4b5fd;
+    }
+    .tags-row { display: flex; flex-wrap: wrap; gap: 4px; }
+    .tag-item { font-family: 'Space Mono', monospace; font-size: 9px; padding: 2px 6px; border-radius: 3px; background: rgba(255,255,255,0.04); border: 1px solid var(--border); color: var(--muted); }
+    .empty-state { text-align: center; padding: 64px 24px; font-family: 'Space Mono', monospace; font-size: 13px; color: var(--muted); background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; }
+
+    footer { margin-top: 48px; padding-top: 20px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; animation: fadeUp 0.5s 0.5s ease both; }
+    .footer-text { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--muted); }
+    .footer-brand { font-family: 'Space Mono', monospace; font-size: 11px; color: #f87171; }
+
+    @keyframes fadeDown { from { opacity:0; transform: translateY(-14px); } to { opacity:1; transform: none; } }
+    @keyframes fadeUp   { from { opacity:0; transform: translateY(18px);  } to { opacity:1; transform: none; } }
+    @media (max-width: 520px) { .wrapper { padding: 32px 14px 60px; } .vm-meta { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+<div class="wrapper">
+  <header>
+    <a href="/" class="back-btn">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+      Dashboard
+    </a>
+    <div class="header-divider"></div>
+    <span class="badge">Azure</span>
+  </header>
+
+  <div class="hero">
+    <p class="hero-eyebrow">// Microsoft Azure · Compute</p>
+    <h1>Virtual Machines</h1>
+    <p class="hero-sub">Subscription: <span style="color:#f87171">{{ subscription_id }}</span></p>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stat-pill">
+      <span class="num num-red">{{ count }}</span>
+      <span class="lbl">Total VMs</span>
+    </div>
+    <div class="stat-pill">
+      <span class="num num-win">{{ virtual_machines | selectattr('os_type', 'equalto', 'Windows') | list | length }}</span>
+      <span class="lbl">Windows</span>
+    </div>
+    <div class="stat-pill">
+      <span class="num num-lin">{{ virtual_machines | selectattr('os_type', 'equalto', 'Linux') | list | length }}</span>
+      <span class="lbl">Linux</span>
+    </div>
+  </div>
+
+  {% if virtual_machines %}
+  <div class="vm-grid">
+    {% for vm in virtual_machines %}
+    <div class="vm-card">
+      <div class="vm-card-header">
+        <span class="vm-name">{{ vm.name }}</span>
+        {% if vm.provisioning_state == 'Succeeded' %}
+        <span class="vm-state state-succeeded"><span class="dot dot-green"></span>OK</span>
+        {% else %}
+        <span class="vm-state state-other"><span class="dot dot-yellow"></span>{{ vm.provisioning_state }}</span>
+        {% endif %}
+      </div>
+
+      <div class="vm-meta">
+        <div class="vm-meta-item">
+          <span class="meta-label">Resource Group</span>
+          <span class="meta-value">{{ vm.resource_group }}</span>
+        </div>
+        <div class="vm-meta-item">
+          <span class="meta-label">Location</span>
+          <span class="location-tag">{{ vm.location }}</span>
+        </div>
+        <div class="vm-meta-item">
+          <span class="meta-label">VM Size</span>
+          <span class="meta-value">{{ vm.vm_size }}</span>
+        </div>
+        <div class="vm-meta-item">
+          <span class="meta-label">OS Type</span>
+          {% if vm.os_type == 'Windows' %}
+          <span class="os-badge os-windows">Windows</span>
+          {% elif vm.os_type == 'Linux' %}
+          <span class="os-badge os-linux">Linux</span>
+          {% else %}
+          <span class="os-badge os-other">{{ vm.os_type }}</span>
+          {% endif %}
+        </div>
+      </div>
+
+      {% if vm.tags %}
+      <div class="tags-row">
+        {% for k, v in vm.tags.items() %}
+        <span class="tag-item">{{ k }}: {{ v }}</span>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <p>No virtual machines found in this subscription.</p>
+  </div>
+  {% endif %}
+
+  <footer>
+    <span class="footer-text">Azure Compute Management API</span>
+    <span class="footer-brand">SreeVeerDevOps</span>
+  </footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Azure Storage Accounts</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #080c10; --border: rgba(255,255,255,0.07);
+      --accent: #00e5ff; --text: #e2e8f0; --muted: #64748b;
+      --card-bg: rgba(255,255,255,0.03); --glow: 0 0 30px rgba(0,229,255,0.12);
+    }
+    body {
+      background: var(--bg); color: var(--text);
+      font-family: 'Syne', sans-serif; min-height: 100vh; overflow-x: hidden;
+    }
+    body::before {
+      content: ''; position: fixed; inset: 0;
+      background-image: linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px);
+      background-size: 48px 48px; pointer-events: none; z-index: 0;
+    }
+    .wrapper { position: relative; z-index: 1; max-width: 1040px; margin: 0 auto; padding: 52px 24px 80px; }
+
+    header { display: flex; align-items: center; gap: 14px; margin-bottom: 48px; animation: fadeDown 0.5s ease both; }
+    .back-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-family: 'Space Mono', monospace; font-size: 11px; color: var(--muted);
+      text-decoration: none; letter-spacing: 0.05em;
+      border: 1px solid var(--border); border-radius: 6px; padding: 6px 12px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .back-btn:hover { color: var(--accent); border-color: rgba(0,229,255,0.3); }
+    .header-divider { flex: 1; height: 1px; background: linear-gradient(90deg, var(--border), transparent); }
+    .badge {
+      font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.1em;
+      padding: 4px 10px; border-radius: 4px; text-transform: uppercase;
+      background: linear-gradient(135deg, rgba(0,120,212,0.25), rgba(0,120,212,0.1));
+      border: 1px solid rgba(0,120,212,0.4); color: #60a5fa;
+    }
+
+    .hero { margin-bottom: 40px; animation: fadeDown 0.5s 0.1s ease both; }
+    .hero-eyebrow { font-family: 'Space Mono', monospace; font-size: 11px; color: #34d399; letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 10px; }
+    .hero h1 { font-size: clamp(26px, 5vw, 42px); font-weight: 800; background: linear-gradient(135deg, #fff 40%, #34d399 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .hero-sub { margin-top: 8px; font-family: 'Space Mono', monospace; font-size: 11px; color: var(--muted); }
+
+    .stats-bar { display: flex; gap: 16px; margin-bottom: 28px; animation: fadeUp 0.5s 0.2s ease both; }
+    .stat-pill {
+      background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px;
+      padding: 10px 18px; display: flex; flex-direction: column; gap: 2px;
+    }
+    .stat-pill .num { font-family: 'Space Mono', monospace; font-size: 22px; color: #34d399; font-weight: 700; }
+    .stat-pill .lbl { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; }
+
+    .table-wrap {
+      background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px;
+      overflow: hidden; animation: fadeUp 0.5s 0.25s ease both;
+    }
+    table { width: 100%; border-collapse: collapse; }
+    thead tr { background: rgba(52,211,153,0.06); border-bottom: 1px solid var(--border); }
+    th { font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); padding: 14px 18px; text-align: left; }
+    tbody tr { border-bottom: 1px solid var(--border); transition: background 0.15s; }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: rgba(52,211,153,0.03); }
+    td { padding: 13px 18px; font-size: 13px; vertical-align: middle; }
+    .mono { font-family: 'Space Mono', monospace; font-size: 12px; color: #34d399; }
+    .location-tag {
+      display: inline-block; font-family: 'Space Mono', monospace; font-size: 10px;
+      padding: 3px 8px; border-radius: 4px;
+      background: rgba(123,94,167,0.15); border: 1px solid rgba(123,94,167,0.3); color: #c4b5fd;
+    }
+    .pill {
+      display: inline-block; font-family: 'Space Mono', monospace; font-size: 10px;
+      padding: 3px 8px; border-radius: 4px; border: 1px solid var(--border);
+      background: rgba(255,255,255,0.04); color: var(--muted);
+    }
+    .kind-pill { border-color: rgba(251,191,36,0.3); background: rgba(251,191,36,0.08); color: #fbbf24; }
+    .sku-pill  { border-color: rgba(96,165,250,0.3); background: rgba(96,165,250,0.08); color: #93c5fd; }
+    .tier-pill { border-color: rgba(167,139,250,0.3); background: rgba(167,139,250,0.08); color: #c4b5fd; }
+    .state-badge { display: inline-flex; align-items: center; gap: 5px; font-family: 'Space Mono', monospace; font-size: 10px; padding: 3px 8px; border-radius: 4px; }
+    .state-succeeded { background: rgba(34,197,94,0.12); border: 1px solid rgba(34,197,94,0.3); color: #4ade80; }
+    .state-other { background: rgba(250,204,21,0.12); border: 1px solid rgba(250,204,21,0.3); color: #fbbf24; }
+    .dot { width: 6px; height: 6px; border-radius: 50%; }
+    .dot-green { background: #22c55e; box-shadow: 0 0 6px #22c55e; }
+    .dot-yellow { background: #eab308; }
+    .empty-state { text-align: center; padding: 64px 24px; font-family: 'Space Mono', monospace; font-size: 13px; color: var(--muted); }
+
+    footer { margin-top: 48px; padding-top: 20px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; animation: fadeUp 0.5s 0.4s ease both; }
+    .footer-text { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--muted); }
+    .footer-brand { font-family: 'Space Mono', monospace; font-size: 11px; color: #34d399; }
+
+    @keyframes fadeDown { from { opacity:0; transform: translateY(-14px); } to { opacity:1; transform: none; } }
+    @keyframes fadeUp   { from { opacity:0; transform: translateY(18px);  } to { opacity:1; transform: none; } }
+    @media (max-width: 720px) {
+      th:nth-child(5), td:nth-child(5), th:nth-child(6), td:nth-child(6) { display: none; }
+      .wrapper { padding: 32px 14px 60px; }
+    }
+  </style>
+</head>
+<body>
+<div class="wrapper">
+  <header>
+    <a href="/" class="back-btn">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+      Dashboard
+    </a>
+    <div class="header-divider"></div>
+    <span class="badge">Azure</span>
+  </header>
+
+  <div class="hero">
+    <p class="hero-eyebrow">// Microsoft Azure · Storage</p>
+    <h1>Storage Accounts</h1>
+    <p class="hero-sub">Subscription: <span style="color:#34d399">{{ subscription_id }}</span></p>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stat-pill">
+      <span class="num">{{ count }}</span>
+      <span class="lbl">Total Accounts</span>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    {% if storage_accounts %}
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Resource Group</th>
+          <th>Location</th>
+          <th>Kind</th>
+          <th>SKU</th>
+          <th>State</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for sa in storage_accounts %}
+        <tr>
+          <td class="mono">{{ sa.name }}</td>
+          <td style="font-size:12px; color: var(--muted);">{{ sa.resource_group }}</td>
+          <td><span class="location-tag">{{ sa.location }}</span></td>
+          <td><span class="pill kind-pill">{{ sa.kind }}</span></td>
+          <td><span class="pill sku-pill">{{ sa.sku }}</span></td>
+          <td>
+            {% if sa.provisioning_state == 'Succeeded' %}
+            <span class="state-badge state-succeeded"><span class="dot dot-green"></span>{{ sa.provisioning_state }}</span>
+            {% else %}
+            <span class="state-badge state-other"><span class="dot dot-yellow"></span>{{ sa.provisioning_state }}</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">
+      <p>No storage accounts found in this subscription.</p>
+    </div>
+    {% endif %}
+  </div>
+
+  <footer>
+    <span class="footer-text">Azure Storage Management API</span>
+    <span class="footer-brand">SreeVeerDevOps</span>
+  </footer>
+</div>
+</body>
+</html>

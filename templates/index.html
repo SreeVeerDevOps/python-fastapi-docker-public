@@ -276,6 +276,35 @@
       flex-shrink: 0;
     }
 
+    /* ── SECTION DIVIDER ── */
+    .section-divider {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin: 36px 0 20px;
+      animation: fadeSlideUp 0.5s 0.6s ease both;
+    }
+    .section-divider-line { flex: 1; height: 1px; background: var(--border); }
+    .section-divider-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .btn-azure {
+      background: linear-gradient(135deg, rgba(0,120,212,0.15), rgba(96,165,250,0.1));
+      border-color: rgba(0,120,212,0.35);
+      color: #60a5fa;
+    }
+    .btn-azure:hover {
+      background: linear-gradient(135deg, rgba(0,120,212,0.28), rgba(96,165,250,0.2));
+      border-color: #60a5fa;
+      box-shadow: 0 0 28px rgba(0,120,212,0.18);
+      transform: translateY(-1px);
+    }
+
     /* ── FOOTER ── */
     footer {
       margin-top: 64px;
@@ -405,6 +434,28 @@
       <a href="/vpcs/us-east-1" id="btn-vpcs" class="btn btn-primary" target="_blank">
         <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
         VPCs
+      </a>
+    </div>
+
+    <!-- Azure Section -->
+    <div class="section-divider">
+      <div class="section-divider-line"></div>
+      <span class="section-divider-label">Microsoft Azure</span>
+      <div class="section-divider-line"></div>
+    </div>
+
+    <div class="actions" style="animation-delay: 0.62s;">
+      <a href="/azure/resource-groups" class="btn btn-azure" target="_blank">
+        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        Resource Groups
+      </a>
+      <a href="/azure/storage-accounts" class="btn btn-azure" target="_blank">
+        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+        Storage Accounts
+      </a>
+      <a href="/azure/virtual-machines" class="btn btn-azure" target="_blank">
+        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        Virtual Machines
       </a>
     </div>
 
