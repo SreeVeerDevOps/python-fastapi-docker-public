@@ -23,7 +23,7 @@ app = FastAPI()
 
 Instrumentator().instrument(app).expose(app)
 
-con_name = os.getenv("HOSTNAME")
+con_name = os.uname().nodename
 b_name = os.getenv("DEPLOYMENT_BRANCH")
 app_name = os.getenv("APP_NAME")
 app_version = os.getenv("APP_VERSION")
@@ -42,7 +42,7 @@ if app_version is None:
 else:
     app_version = app_version
 
-python_version = os.getenv("PYTHON_VERSION")
+python_version = os.getenv("PYTHON_VERSION", "Ubuntu_Default_3_10_12")
 
 IP = requests.get('https://api.ipify.org').content.decode('utf8')
 
