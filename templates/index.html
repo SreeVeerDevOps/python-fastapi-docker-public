@@ -345,6 +345,33 @@
       50% { opacity: 0.4; }
     }
 
+    /* ── TOP GUN GIF BADGE ── */
+    .topgun-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid rgba(212,175,55,0.35);
+      box-shadow: 0 0 10px rgba(212,175,55,0.1);
+      flex-shrink: 0;
+      height: 36px;
+    }
+    .topgun-badge img {
+      height: 36px;
+      width: auto;
+      display: block;
+      object-fit: cover;
+    }
+    .topgun-badge-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      color: #d4af37;
+      white-space: nowrap;
+      padding-right: 10px;
+    }
+
     /* ── RESPONSIVE ── */
     @media (max-width: 520px) {
       .wrapper { padding: 36px 16px 60px; }
@@ -358,6 +385,14 @@
 
     <!-- Header -->
     <header>
+      <!-- Top Gun Maverick GIF badge -->
+      <span class="topgun-badge">
+        <img
+          src="https://media1.tenor.com/m/Jhzs40TuF_oAAAAd/darkstar-top-gun-maverick.gif"
+          alt="Top Gun Maverick fighter jet zooming"
+        />
+        <span class="topgun-badge-label">DevOps &amp; SRE</span>
+      </span>
       <span class="logo-pill">FastAPI</span>
       <div class="header-divider"></div>
       <div class="status-dot"></div>
@@ -367,7 +402,7 @@
     <!-- Hero -->
     <div class="hero">
       <p class="hero-eyebrow">// Python · Docker · FastAPI</p>
-      <h1>Welcome To<br>Python FastAPI Project</h1>
+      <h1>Welcome To<br>Python FastAPI Project For<br> AWS and Azure</h1>
     </div>
 
     <!-- Info Cards -->
