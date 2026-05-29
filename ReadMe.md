@@ -1,9 +1,16 @@
 # For Using Azure Code, create and provide reader access to service princial and export it as env variable
 ```
+# For Azure
 export AZURE_SUBSCRIPTION_ID='XXXXXXXXXXXXXXXXX'
 export AZURE_TENANT_ID='yyyyyyyyyyyyyyyyyyyy'
 export AZURE_CLIENT_ID='zzzzzzzzzzzzzzzzzzzz'
 export AZURE_CLIENT_SECRET='aaaaaaaaaaaaaaaaaaaaaaaaaa'
+```
+```
+# For AWS
+export AWS_ACCESS_KEY_ID='XXXXXXXXXXXXXXXXX'
+export AWS_SECRET_ACCESS_KEY='yyyyyyyyyyyyyyyyyyyy'
+export AWS_DEFAULT_REGION='zzzzzzzzzzzzzzzzzzzz'
 ```
 
 # Python FastAPI Application For Testing Azure AppService
