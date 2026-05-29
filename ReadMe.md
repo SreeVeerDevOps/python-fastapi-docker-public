@@ -15,7 +15,8 @@ https://github.com/Azure/azure-sdk-for-python/issues/37491
 #!/bin/bash    
 rm -rf fastapi    
 git clone https://github.com/SreeVeerDevOps/python-fastapi-docker-public.git fastapi      
-cd fastapi     
+cd fastapi
+sudo apt remove python3-typing-extensions (If you are using Ubuntu 24.04)
 pip3 install -r requirements.txt    
 uvicorn main:app --host 0.0.0.0 --port 8001 --reload &
 
