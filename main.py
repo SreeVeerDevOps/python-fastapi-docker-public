@@ -50,15 +50,17 @@ templates = Jinja2Templates(directory="templates")
 
 @app.get("/")
 def homepage(request: Request):
-    return templates.TemplateResponse("index.html", {
-        "request": request, 
-        "name": app_name,
-        "version": app_version,
-        "container_id": con_name,
-        "python_version": python_version,
-        "IP": IP,
-        "branch_name": branch_name
-        })
+    return templates.TemplateResponse(
+        request,
+        "index.html",
+        {
+            "name": app_name,
+            "container_id": con_name,
+            "python_version": python_version,
+            "IP": IP,
+            "branch_name": branch_name,
+        },
+    )
 
 app.include_router(awsrawoutput.router)
 app.include_router(aws.router)
