@@ -59,11 +59,12 @@ def homepage(request: Request):
             "python_version": python_version,
             "IP": IP,
             "branch_name": branch_name,
+            "version": app_version,
         },
     )
 
-app.include_router(awsrawoutput.router)
+#app.include_router(awsrawoutput.router)
 app.include_router(aws.router)
-app.include_router(azure.router)
+#app.include_router(azure.router)
 app.include_router(pokemon.router)
-app.include_router(azure_routes.router)
+#app.include_router(azure_routes.router)
