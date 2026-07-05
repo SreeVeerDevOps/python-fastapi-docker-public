@@ -17,20 +17,6 @@ from azure.storage.blob.aio import BlobServiceClient
 from azure.mgmt.compute import ComputeManagementClient
 from platform import python_version
 
-key_vault_name = "azureb59kv"
-key_vault_uri = f"https://azureb59kv.vault.azure.net"
-secret_name1 = "aws-access-key"
-secret_name2 = "aws-secret-key"
-
-credential = DefaultAzureCredential()
-print(credential)
-client = SecretClient(vault_url=key_vault_uri, credential=credential)
-retrieved_secret1 = client.get_secret(secret_name1)
-retrieved_secret2 = client.get_secret(secret_name2)
-
-os.environ['AWS_ACCESS_KEY_ID'] = retrieved_secret1.value
-os.environ['AWS_SECRET_ACCESS_KEY'] = retrieved_secret2.value
-
 router = APIRouter()
 
 templates = Jinja2Templates(directory="templates")
@@ -50,7 +36,7 @@ def get_certs(request: Request, region: str):
     account_id = cert_split[4]
     from_region = region
     cap_region = from_region.upper()
-    return templates.TemplateResponse(request, "certs.html", {"name": "Certificates List", "region": cap_region,"account_id": account_id,"all_certs": all_certs})
+    return templates.TemplateResponse(request, "certs.html", {"name": "AWS B76 Certificates List", "region": cap_region,"account_id": account_id,"all_certs": all_certs})
 
 @router.get('/certs/{region}/expired', tags=["AWS"])
 def get_certs_expired(request: Request, region: str):
@@ -62,7 +48,7 @@ def get_certs_expired(request: Request, region: str):
     cert_split = first_cert['CertificateArn'].split(':')
     account_id = cert_split[4]
     expited_certs = [cert for cert in all_certs if cert['Status'] == 'EXPIRED']
-    return templates.TemplateResponse(request, "certs.html", {"name": "Expired Certificates List", "region": cap_region,"account_id": account_id,"all_certs": expited_certs})
+    return templates.TemplateResponse(request, "certs.html", {"name": "AWS B76 Expired Certificates List", "region": cap_region,"account_id": account_id,"all_certs": expited_certs})
 
 
 @router.get("/getvpc", tags=["AWS"])
@@ -87,7 +73,7 @@ def get_vpcs(request: Request, region: str):
      account_id = sts.get_caller_identity()["Account"]
      print(account_id)
      cap_region = from_region.upper()
-     return templates.TemplateResponse(request, "vpc.html", {"name": "VPC Info For Region","region": cap_region,  "vpc_dict": vpc_info, "account_id": account_id})
+     return templates.TemplateResponse(request, "vpc.html", {"name": "AWS B76 VPC Info For Region","region": cap_region,  "vpc_dict": vpc_info, "account_id": account_id})
 
 
 @router.get("/s3/{region}", tags=["AWS"])
