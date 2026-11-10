@@ -1,36 +1,48 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bootstrap Sample</title>
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-</head>
-<body>
-    <div class="container">
-        <center> <h1>{{ name }}</h1> </center>
-        <center> <h1>Subscription ID : {{ subscription_id }}</h1> </center>
-        <center> <h1>Subscription Name : {{ subscription_name }}</h1> </center>
-<table class="table">
-    <tr>
-    <th>S.No</th>
-    <th>RG Name</th>
-    <th>RG Location</th>
-    </tr>
-    {% for rg_name,rg_location in rg_dict.items() %}
-    <tr>
-    <td>{{ loop.index }}</td>
-    <td>{{ rg_name }}</td>
-    <td>{{ rg_location }}</td>
-    </tr>
-    {% endfor %}
-</table>
-    </div>
+{% extends "_layout.html" %}
+{% block title %}Resource Groups{% endblock %}
+{% block eyebrow %}<span class="eyebrow">Azure</span>{% endblock %}
+{% block heading %}Resource Groups{% endblock %}
+{% block lead %}Every resource group in subscription {{ subscription_name }}.{% endblock %}
 
-    <!-- Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</body>
-</html>
+{% block stats %}
+    <div class="stat"><div class="label">Subscription</div><div class="value small">{{ subscription_name }}</div></div>
+    <div class="stat"><div class="label">Resource groups</div><div class="value">{{ rg_dict | length }}</div></div>
+    <div class="stat"><div class="label">Regions</div><div class="value">{{ rg_dict.values() | unique | list | length }}</div></div>
+    <div class="stat"><div class="label">Managed identity</div><div class="value small">{{ identity }}</div></div>
+{% endblock %}
+
+{% block content %}
+    {% if rg_dict %}
+    <div class="search"><input id="filter" type="search" placeholder="Filter by name or region" aria-label="Filter resource groups"></div>
+    {% endif %}
+    <section class="sub">
+        <div class="sub-head">
+            <div>
+                <h2>{{ subscription_name }}</h2>
+                <div class="id">{{ subscription_id }}</div>
+            </div>
+            <span class="pill"><span class="count">{{ rg_dict | length }}</span> resource group{{ '' if rg_dict | length == 1 else 's' }}</span>
+        </div>
+        {% if rg_dict %}
+        <div class="table-wrap">
+            <table>
+                <tr><th>#</th><th>Name</th><th>Region</th></tr>
+                {% for rg_name, rg_location in rg_dict.items() | sort(attribute='0') %}
+                <tr class="row">
+                    <td class="idx">{{ loop.index }}</td>
+                    <td>{{ rg_name }}</td>
+                    <td><span class="tag">{{ rg_location }}</span></td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <div class="note no-match" hidden>No resource groups match the filter.</div>
+        {% else %}
+        <div class="empty">
+            <b>No resource groups are visible to this app.</b><br>
+            Give identity <code>{{ identity }}</code> the <b>Reader</b> role on the subscription.<br>
+            New role assignments can take a few minutes to apply.
+        </div>
+        {% endif %}
+    </section>
+{% endblock %}

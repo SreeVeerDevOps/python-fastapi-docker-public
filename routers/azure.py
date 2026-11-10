@@ -6,7 +6,7 @@ client ID. It can't come from Key Vault, because this identity is what reads Key
 
 The identity needs:
   - "Key Vault Secrets User" (or a Get-secret access policy) on the Key Vault
-  - "Reader" on the subscription, to list resource groups, VNets and storage accounts
+  - "Reader" on the subscription, to list resource groups and storage accounts
   - For /networks: "Reader" on every subscription (or management group) it should show
 """
 import os
@@ -44,7 +44,6 @@ print(f'The retrieved Value From Key Vault For Subscription ID is {subscription_
 print(f'The retrieved Value From Key Vault For Subscription Name is {subscription_name}.')
 
 resource_client = ResourceManagementClient(credential, subscription_id)
-network_client = NetworkManagementClient(credential, subscription_id)
 storage_client = StorageManagementClient(credential, subscription_id)
 
 router = APIRouter()
@@ -95,25 +94,12 @@ def azure_listrg(request: Request):
     return _page(request, "rg.html", "Resource Group Information", rg_dict=rg_dict)
 
 
-@router.get("/listvnet", tags=["Azure"])
-def azure_listvnet(request: Request):
-    try:
-        data = []
-        for vnet in network_client.virtual_networks.list_all():
-            prefixes = vnet.address_space.address_prefixes if vnet.address_space else []
-            rg_name = vnet.id.split('/')[4]
-            data.append((vnet.name, ", ".join(prefixes or []), rg_name))
-    except Exception as exc:
-        return _azure_error(exc)
-    print(f"/listvnet: {len(data)} VNet(s) visible in subscription {subscription_id} to identity {managed_identity_client_id or 'system-assigned'}")
-    return _page(request, "vnet.html", "Virtual Networks Information", data=data)
-
-
 @router.get("/listsa", tags=["Azure"])
 def azure_list_sa(request: Request):
     try:
         data = [
-            (account.name, account.location, account.sku.name if account.sku else "")
+            # sku.name is an enum; .value gives "Standard_LRS" instead of "SkuName.STANDARD_LRS"
+            (account.name, account.location, getattr(account.sku.name, "value", account.sku.name) if account.sku else "")
             for account in storage_client.storage_accounts.list()
         ]
     except Exception as exc:

@@ -1,37 +1,43 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bootstrap Sample</title>
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-</head>
-<body>
-    <div class="container">
-        <center> <h1>{{ name }}</h1> </center>
-        <center> <h1>Total Bucket Count Is {{ total_bucket_count }}</h1> </center>
-        <center> <h1>AWS Account {{ account_id }}</h1> </center>
-<table class="table">
-    <tr>
-    <th>S.No</th>    
-    <th>Bucket Name</th>
-    <th>Created On</th>
-    </tr>
-    <tr>
-    {% for bucket in bucket_list %}
-    {# https://stackoverflow.com/questions/27035728/flask-cannot-import-enumerate-undefinederror-enumerate-is-undefined #}
-    <td>{{ loop.index0 }}</td>
-    <td>{{ bucket['Name'] }}</td>
-    <td>{{ bucket['CreationDate'] }}</td>
-    </tr>
-    {% endfor %}
-</table>
-    </div>
+{% extends "_layout.html" %}
+{% block title %}S3 Buckets{% endblock %}
+{% block banner %}https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=2000&q=80{% endblock %}
+{% block eyebrow %}<span class="eyebrow">AWS</span>{% endblock %}
+{% block heading %}S3 Buckets{% endblock %}
+{% block lead %}Every S3 bucket in AWS account {{ account_id }}.{% endblock %}
 
-    <!-- Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</body>
-</html>
+{% block stats %}
+    <div class="stat"><div class="label">AWS account</div><div class="value small">{{ account_id }}</div></div>
+    <div class="stat"><div class="label">Buckets</div><div class="value">{{ total_bucket_count }}</div></div>
+{% endblock %}
+
+{% block content %}
+    {% if bucket_list %}
+    <div class="search"><input id="filter" type="search" placeholder="Filter by bucket name or date" aria-label="Filter buckets"></div>
+    {% endif %}
+    <section class="sub">
+        <div class="sub-head">
+            <div>
+                <h2>Buckets</h2>
+                <div class="id">Account {{ account_id }}</div>
+            </div>
+            <span class="pill"><span class="count">{{ bucket_list | length }}</span> bucket{{ '' if bucket_list | length == 1 else 's' }}</span>
+        </div>
+        {% if bucket_list %}
+        <div class="table-wrap">
+            <table>
+                <tr><th>#</th><th>Bucket name</th><th>Created</th></tr>
+                {% for bucket in bucket_list %}
+                <tr class="row">
+                    <td class="idx">{{ loop.index }}</td>
+                    <td>{{ bucket['Name'] }}</td>
+                    <td class="mono">{{ bucket['CreationDate'].strftime('%Y-%m-%d %H:%M UTC') if bucket['CreationDate'].strftime is defined else bucket['CreationDate'] }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <div class="note no-match" hidden>No buckets match the filter.</div>
+        {% else %}
+        <div class="empty"><b>No S3 buckets found in this account.</b></div>
+        {% endif %}
+    </section>
+{% endblock %}

@@ -1,40 +1,48 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bootstrap Sample</title>
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-</head>
-<body>
-    <div class="container">
-        <center> <h1>{{ name }} for {{ region }} </h1> </center>
-        <center> <h1>AWS Account {{ account_id }} </h1> </center>
-<table class="table">
-    <tr>
-    <th>S.No</th>    
-    <th>Domain</th>
-    <th>Status</th>
-    <th>Type</th>
-    <th>InUse</th>
-    </tr>
-    <tr>
-    {% for cert in all_certs %}
-    {# https://stackoverflow.com/questions/27035728/flask-cannot-import-enumerate-undefinederror-enumerate-is-undefined #}
-    <td>{{ loop.index0 }}</td>
-    <td>{{ cert['DomainName'] }}</td>
-    <td>{{ cert['Status'] }}</td>
-    <td>{{ cert['Type'] }}</td>
-    <td>{{ cert['InUse'] }}</td>
-    </tr>
-    {% endfor %}
-</table>
-    </div>
+{% extends "_layout.html" %}
+{% block title %}{{ name }} · {{ region }}{% endblock %}
+{% block banner %}https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=2000&q=80{% endblock %}
+{% block eyebrow %}<span class="eyebrow">AWS</span>{% endblock %}
+{% block heading %}{{ name }}{% endblock %}
+{% block lead %}ACM certificates in region {{ region }}, AWS account {{ account_id }}.{% endblock %}
 
-    <!-- Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</body>
-</html>
+{% block stats %}
+    <div class="stat"><div class="label">AWS account</div><div class="value small">{{ account_id }}</div></div>
+    <div class="stat"><div class="label">Region</div><div class="value small">{{ region }}</div></div>
+    <div class="stat"><div class="label">Certificates</div><div class="value">{{ all_certs | length }}</div></div>
+    <div class="stat"><div class="label">In use</div><div class="value">{{ all_certs | selectattr('InUse') | list | length }}</div></div>
+{% endblock %}
+
+{% block content %}
+    {% if all_certs %}
+    <div class="search"><input id="filter" type="search" placeholder="Filter by domain, status or type" aria-label="Filter certificates"></div>
+    {% endif %}
+    <section class="sub">
+        <div class="sub-head">
+            <div>
+                <h2>{{ region }}</h2>
+                <div class="id">Account {{ account_id }}</div>
+            </div>
+            <span class="pill"><span class="count">{{ all_certs | length }}</span> certificate{{ '' if all_certs | length == 1 else 's' }}</span>
+        </div>
+        {% if all_certs %}
+        <div class="table-wrap">
+            <table>
+                <tr><th>#</th><th>Domain</th><th>Status</th><th>Type</th><th>In use</th></tr>
+                {% for cert in all_certs %}
+                {% set status = cert['Status'] | string %}
+                <tr class="row">
+                    <td class="idx">{{ loop.index }}</td>
+                    <td>{{ cert['DomainName'] }}</td>
+                    <td><span class="tag {{ 'ok' if status == 'ISSUED' else 'warn' if status.startswith('PENDING') else 'err' }}">{{ status }}</span></td>
+                    <td>{{ cert['Type'] }}</td>
+                    <td><span class="tag {{ 'ok' if cert['InUse'] }}">{{ 'Yes' if cert['InUse'] else 'No' }}</span></td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <div class="note no-match" hidden>No certificates match the filter.</div>
+        {% else %}
+        <div class="empty"><b>No certificates found in {{ region }}.</b></div>
+        {% endif %}
+    </section>
+{% endblock %}

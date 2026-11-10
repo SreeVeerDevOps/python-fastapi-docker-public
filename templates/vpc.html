@@ -1,36 +1,44 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bootstrap Sample</title>
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-</head>
-<body>
-    <div class="container">
-        <center> <h1>{{ name }} {{ region }}</h1> </center>
-        <center> <h1>AWS Account {{ account_id }}</h1> </center>
-<table class="table">
-    <tr>
-    <th>S.No</th>    
-    <th>VPC ID</th>
-    <th>VPC Addres Space</th>
-    </tr>
-    <tr>
-    {% for vpc_id,vpc_cidr in vpc_dict.items() %}
-    {# https://stackoverflow.com/questions/27035728/flask-cannot-import-enumerate-undefinederror-enumerate-is-undefined #}
-    <td>{{ loop.index0 }}</td>
-    <td>{{ vpc_id }}</td>
-    <td>{{ vpc_cidr }}</td>
-    </tr>
-    {% endfor %}
-</table>
-    </div>
+{% extends "_layout.html" %}
+{% block title %}VPCs · {{ region }}{% endblock %}
+{% block banner %}https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=2000&q=80{% endblock %}
+{% block eyebrow %}<span class="eyebrow">AWS</span>{% endblock %}
+{% block heading %}VPCs{% endblock %}
+{% block lead %}Virtual private clouds in region {{ region }}, AWS account {{ account_id }}.{% endblock %}
 
-    <!-- Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</body>
-</html>
+{% block stats %}
+    <div class="stat"><div class="label">AWS account</div><div class="value small">{{ account_id }}</div></div>
+    <div class="stat"><div class="label">Region</div><div class="value small">{{ region }}</div></div>
+    <div class="stat"><div class="label">VPCs</div><div class="value">{{ vpc_dict | length }}</div></div>
+{% endblock %}
+
+{% block content %}
+    {% if vpc_dict %}
+    <div class="search"><input id="filter" type="search" placeholder="Filter by VPC ID or CIDR" aria-label="Filter VPCs"></div>
+    {% endif %}
+    <section class="sub">
+        <div class="sub-head">
+            <div>
+                <h2>{{ region }}</h2>
+                <div class="id">Account {{ account_id }}</div>
+            </div>
+            <span class="pill"><span class="count">{{ vpc_dict | length }}</span> VPC{{ '' if vpc_dict | length == 1 else 's' }}</span>
+        </div>
+        {% if vpc_dict %}
+        <div class="table-wrap">
+            <table>
+                <tr><th>#</th><th>VPC ID</th><th>Address space</th></tr>
+                {% for vpc_id, vpc_cidr in vpc_dict.items() %}
+                <tr class="row">
+                    <td class="idx">{{ loop.index }}</td>
+                    <td class="mono">{{ vpc_id }}</td>
+                    <td><span class="cidr">{{ vpc_cidr }}</span></td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <div class="note no-match" hidden>No VPCs match the filter.</div>
+        {% else %}
+        <div class="empty"><b>No VPCs found in {{ region }}.</b></div>
+        {% endif %}
+    </section>
+{% endblock %}

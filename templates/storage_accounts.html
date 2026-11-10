@@ -1,38 +1,49 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bootstrap Sample</title>
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-</head>
-<body>
-    <div class="container">
-        <center> <h1>{{ name }}</h1> </center>
-        <center> <h1>Subscription ID : {{ subscription_id }}</h1> </center>
-        <center> <h1>Subscription Name : {{ subscription_name }}</h1> </center>
-<table class="table">
-    <tr>
-    <th>S.No</th>
-    <th>SA Name</th>
-    <th>SA Region</th>
-    <th>SA Tier</th>
-    </tr>
-    {% for sa_accounts_name, sa_accounts_loc, sa_sku in data %}
-    <tr>
-    <td>{{ loop.index }}</td>
-    <td>{{ sa_accounts_name }}</td>
-    <td>{{ sa_accounts_loc }}</td>
-    <td>{{ sa_sku }}</td>
-    </tr>
-    {% endfor %}
-</table>
-    </div>
+{% extends "_layout.html" %}
+{% block title %}Storage Accounts{% endblock %}
+{% block eyebrow %}<span class="eyebrow">Azure</span>{% endblock %}
+{% block heading %}Storage Accounts{% endblock %}
+{% block lead %}Storage accounts in subscription {{ subscription_name }}.{% endblock %}
 
-    <!-- Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</body>
-</html>
+{% block stats %}
+    <div class="stat"><div class="label">Subscription</div><div class="value small">{{ subscription_name }}</div></div>
+    <div class="stat"><div class="label">Storage accounts</div><div class="value">{{ data | length }}</div></div>
+    <div class="stat"><div class="label">Regions</div><div class="value">{{ data | map(attribute='1') | unique | list | length }}</div></div>
+    <div class="stat"><div class="label">Managed identity</div><div class="value small">{{ identity }}</div></div>
+{% endblock %}
+
+{% block content %}
+    {% if data %}
+    <div class="search"><input id="filter" type="search" placeholder="Filter by name, region or SKU" aria-label="Filter storage accounts"></div>
+    {% endif %}
+    <section class="sub">
+        <div class="sub-head">
+            <div>
+                <h2>{{ subscription_name }}</h2>
+                <div class="id">{{ subscription_id }}</div>
+            </div>
+            <span class="pill"><span class="count">{{ data | length }}</span> account{{ '' if data | length == 1 else 's' }}</span>
+        </div>
+        {% if data %}
+        <div class="table-wrap">
+            <table>
+                <tr><th>#</th><th>Name</th><th>Region</th><th>SKU</th></tr>
+                {% for sa_name, sa_location, sa_sku in data %}
+                <tr class="row">
+                    <td class="idx">{{ loop.index }}</td>
+                    <td>{{ sa_name }}</td>
+                    <td><span class="tag">{{ sa_location }}</span></td>
+                    <td><span class="mono">{{ sa_sku }}</span></td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <div class="note no-match" hidden>No storage accounts match the filter.</div>
+        {% else %}
+        <div class="empty">
+            <b>No storage accounts are visible to this app.</b><br>
+            Give identity <code>{{ identity }}</code> the <b>Reader</b> role on the subscription.<br>
+            New role assignments can take a few minutes to apply.
+        </div>
+        {% endif %}
+    </section>
+{% endblock %}

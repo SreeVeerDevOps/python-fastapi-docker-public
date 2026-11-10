@@ -1,33 +1,38 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bootstrap Sample</title>
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-</head>
-<body>
-    <div class="container">
-  <h1>Customer Data</h1>
-<table class="table">
-    <tr>
-    <th>Name</th>
-    <th>URL</th>
-    </tr>
-    {% for poke in POKEMON_LIST %}
-    <tr>
-    <td>{{ poke.name }}</td>
-    <td>{{ poke.url }}</td>
-    </tr>
-    {% endfor %}
-</table>
+{% extends "_layout.html" %}
+{% block title %}Pokémon{% endblock %}
+{% block eyebrow %}<span class="eyebrow">Demo API</span>{% endblock %}
+{% block heading %}Pokémon{% endblock %}
+{% block lead %}Pokémon from the public PokéAPI. Open one at <code>/pokemon/&lt;name&gt;</code>.{% endblock %}
 
-    </div>
+{% block stats %}
+    <div class="stat"><div class="label">Pokémon</div><div class="value">{{ POKEMON_LIST | length }}</div></div>
+{% endblock %}
 
-    <!-- Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</body>
-</html>
+{% block content %}
+    {% if POKEMON_LIST %}
+    <div class="search"><input id="filter" type="search" placeholder="Filter by name" aria-label="Filter Pokémon"></div>
+    {% endif %}
+    <section class="sub">
+        <div class="sub-head">
+            <div><h2>All Pokémon</h2></div>
+            <span class="pill"><span class="count">{{ POKEMON_LIST | length }}</span> listed</span>
+        </div>
+        {% if POKEMON_LIST %}
+        <div class="table-wrap">
+            <table>
+                <tr><th>#</th><th>Name</th><th>API URL</th></tr>
+                {% for poke in POKEMON_LIST %}
+                <tr class="row">
+                    <td class="idx">{{ loop.index }}</td>
+                    <td><a href="/pokemon/{{ poke.name }}">{{ poke.name }}</a></td>
+                    <td class="mono">{{ poke.url }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <div class="note no-match" hidden>No Pokémon match the filter.</div>
+        {% else %}
+        <div class="empty"><b>No Pokémon returned.</b></div>
+        {% endif %}
+    </section>
+{% endblock %}
