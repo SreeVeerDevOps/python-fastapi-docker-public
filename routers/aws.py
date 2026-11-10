@@ -17,8 +17,8 @@ from azure.storage.blob.aio import BlobServiceClient
 from azure.mgmt.compute import ComputeManagementClient
 from platform import python_version
 
-key_vault_name = "azureb59kv"
-key_vault_uri = f"https://azureb59kv.vault.azure.net"
+key_vault_name = "azureb61kv"
+key_vault_uri = f"https://azureb61kv.vault.azure.net"
 secret_name1 = "aws-access-key"
 secret_name2 = "aws-secret-key"
 

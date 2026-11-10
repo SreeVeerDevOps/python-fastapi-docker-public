@@ -18,10 +18,9 @@
     <th>RG Name</th>
     <th>RG Location</th>
     </tr>
-    <tr>
     {% for rg_name,rg_location in rg_dict.items() %}
-    {# https://stackoverflow.com/questions/27035728/flask-cannot-import-enumerate-undefinederror-enumerate-is-undefined #}
-    <td>{{ loop.index0 }}</td>
+    <tr>
+    <td>{{ loop.index }}</td>
     <td>{{ rg_name }}</td>
     <td>{{ rg_location }}</td>
     </tr>

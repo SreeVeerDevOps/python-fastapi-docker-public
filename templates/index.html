@@ -3,52 +3,240 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bootstrap Sample</title>
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>{{ name }}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #070b16;
+            --panel: rgba(255, 255, 255, 0.06);
+            --border: rgba(255, 255, 255, 0.12);
+            --text: #e8ecf5;
+            --muted: #9aa5bd;
+            --accent: #4f9dff;
+            --accent2: #9b6bff;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+            background: var(--bg);
+            color: var(--text);
+        }
+        a { color: inherit; text-decoration: none; }
+
+        /* ---------- Hero ---------- */
+        .hero {
+            position: relative;
+            min-height: 78vh;
+            display: flex;
+            align-items: center;
+            padding: 6rem 1.5rem 8rem;
+            background:
+                linear-gradient(180deg, rgba(7, 11, 22, 0.35) 0%, rgba(7, 11, 22, 0.55) 60%, var(--bg) 100%),
+                url("https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=2000&q=80") center / cover no-repeat;
+        }
+        .hero-inner { max-width: 1100px; margin: 0 auto; width: 100%; }
+        .badge {
+            display: inline-flex; align-items: center; gap: .5rem;
+            padding: .35rem .9rem; border-radius: 999px;
+            background: rgba(79, 157, 255, 0.15); border: 1px solid rgba(79, 157, 255, 0.4);
+            font-size: .8rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase;
+        }
+        .badge .dot { width: 8px; height: 8px; border-radius: 50%; background: #3ddc97; box-shadow: 0 0 10px #3ddc97; }
+        .hero h1 {
+            font-size: clamp(2.4rem, 6vw, 4.5rem);
+            line-height: 1.05; font-weight: 800; margin: 1.2rem 0 1rem;
+            background: linear-gradient(90deg, #fff 0%, #b9d4ff 50%, #c9b4ff 100%);
+            -webkit-background-clip: text; background-clip: text; color: transparent;
+        }
+        .hero p.lead { font-size: 1.2rem; color: #c9d2e6; max-width: 640px; margin: 0 0 2rem; }
+        .cta { display: flex; gap: .8rem; flex-wrap: wrap; }
+        .btn {
+            display: inline-block; padding: .85rem 1.5rem; border-radius: 12px;
+            font-weight: 600; border: 1px solid transparent; transition: transform .15s, box-shadow .15s, background .15s;
+        }
+        .btn-primary { background: linear-gradient(90deg, var(--accent), var(--accent2)); box-shadow: 0 8px 30px rgba(79, 157, 255, 0.35); }
+        .btn-ghost { background: rgba(255, 255, 255, 0.08); border-color: var(--border); backdrop-filter: blur(8px); }
+        .btn:hover { transform: translateY(-2px); }
+
+        /* ---------- Info strip ---------- */
+        .wrap { max-width: 1100px; margin: 0 auto; padding: 0 1.5rem; }
+        .stats {
+            margin-top: -5rem; position: relative;
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;
+        }
+        .stat {
+            background: rgba(16, 22, 40, 0.75); border: 1px solid var(--border);
+            border-radius: 16px; padding: 1.1rem 1.25rem; backdrop-filter: blur(14px);
+        }
+        .stat .label { font-size: .75rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+        .stat .value { font-size: 1.05rem; font-weight: 600; margin-top: .35rem; word-break: break-all; }
+
+        /* ---------- Sections ---------- */
+        section { padding: 4rem 0 1rem; }
+        .section-head { display: flex; justify-content: space-between; align-items: end; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem; }
+        .section-head h2 { font-size: 1.8rem; margin: 0; }
+        .section-head p { color: var(--muted); margin: .3rem 0 0; }
+        select {
+            background: var(--panel); color: var(--text); border: 1px solid var(--border);
+            border-radius: 10px; padding: .6rem 1rem; font: inherit;
+        }
+        select option { color: #000; }
+
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.25rem; }
+        .card {
+            position: relative; overflow: hidden; border-radius: 18px; min-height: 220px;
+            border: 1px solid var(--border); display: flex; align-items: flex-end;
+            transition: transform .25s, box-shadow .25s;
+        }
+        .card img {
+            position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+            transition: transform .6s;
+        }
+        .card::after {
+            content: ""; position: absolute; inset: 0;
+            background: linear-gradient(180deg, rgba(7, 11, 22, 0.05) 0%, rgba(7, 11, 22, 0.92) 85%);
+        }
+        .card:hover { transform: translateY(-4px); box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45); }
+        .card:hover img { transform: scale(1.07); }
+        .card .body { position: relative; z-index: 1; padding: 1.25rem; }
+        .card h3 { margin: 0 0 .3rem; font-size: 1.15rem; }
+        .card p { margin: 0; color: #c3cbe0; font-size: .9rem; }
+        .tag {
+            display: inline-block; font-size: .7rem; font-weight: 700; letter-spacing: .08em;
+            padding: .2rem .55rem; border-radius: 6px; margin-bottom: .6rem;
+        }
+        .tag.aws { background: #ff9900; color: #111; }
+        .tag.azure { background: #0078d4; }
+        .tag.fun { background: #e3350d; }
+        .tag.new { background: #3ddc97; color: #062; }
+
+        .feature {
+            display: grid; grid-template-columns: 1.1fr 1fr; gap: 0; border-radius: 22px; overflow: hidden;
+            border: 1px solid var(--border); background: var(--panel);
+        }
+        .feature img { width: 100%; height: 100%; min-height: 300px; object-fit: cover; display: block; }
+        .feature .body { padding: 2.5rem; display: flex; flex-direction: column; justify-content: center; }
+        .feature h2 { margin: .5rem 0 .8rem; font-size: 1.9rem; }
+        .feature p { color: var(--muted); margin: 0 0 1.5rem; }
+        @media (max-width: 760px) { .feature { grid-template-columns: 1fr; } .feature img { min-height: 200px; } }
+
+        footer { text-align: center; color: var(--muted); font-size: .85rem; padding: 4rem 1rem 3rem; }
+        footer a { text-decoration: underline; }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Welcome To Python FastAPI</h1><br>
-        <h1>{{name}}</h1><br>
-        <h1>Your API Request Is Processed By The Container ID: {{ container_id }}</h1><br>
-        <h1>Your Container Is Running Python Version: {{ python_version }}</h1><br>
-        <h1>Public IP Address Of This WebApp Is: {{ IP }}</h1><br>
-        <h1>This Is a From {{ branch_name }} Branch</h1><br>
-        <h1>AZURE MSI DEMO WITH KV</h1><br>
-        <h2>Select Region:</h2><br>
-        <select id="region-select" class="form-control">
-            <option value="us-east-1">US East 1</option>
-            <option value="us-east-2">US East 2</option>
-            <option value="ap-south-1">Mumbai</option>
-        </select><br>
-        <a href="/pokemon" class="btn btn-primary">List Pokemon</a>
-        <a href="/certs/us-east-1" class="btn btn-primary">List Certificates</a>
-        <a href="/certs/us-east-1/expired" class="btn btn-primary">List Expired Certificates</a>
-        <a href="/s3/us-east-1" class="btn btn-primary">List S3 Buckets</a>
-        <a href="/vpcs/us-east-1" class="btn btn-primary">List VPCs</a>
-        <script>
-            document.getElementById('region-select').addEventListener('change', function() {
-            var region = this.value;
-            document.querySelector('a[href="/certs/us-east-1"]').setAttribute('href', '/certs/' + region);
-            document.querySelector('a[href="/certs/us-east-1/expired"]').setAttribute('href', '/certs/' + region + '/expired');
-            document.querySelector('a[href="/s3/us-east-1"]').setAttribute('href', '/s3/' + region);
-            document.querySelector('a[href="/vpcs/us-east-1"]').setAttribute('href', '/vpcs/' + region);
-            });
-        </script>
-        <script>
-            document.querySelector('a[href="/pokemon"]').setAttribute('target', '_blank');
-            document.querySelector('a[href="/certs/us-east-1"]').setAttribute('target', '_blank');
-            document.querySelector('a[href="/certs/us-east-1/expired"]').setAttribute('target', '_blank');
-            document.querySelector('a[href="/s3/us-east-1"]').setAttribute('target', '_blank');
-            document.querySelector('a[href="/vpcs/us-east-1"]').setAttribute('target', '_blank');
-        </script>
-    </div>
+    <header class="hero">
+        <div class="hero-inner">
+            <span class="badge"><span class="dot"></span>Azure MSI demo with Key Vault &middot; {{ branch_name }}</span>
+            <h1>{{ name }}</h1>
+            <p class="lead">A Python FastAPI application that explores AWS and Azure resources and uploads files to Azure Storage using the server's managed identity. No secrets in code.</p>
+            <div class="cta">
+                <a href="/upload" class="btn btn-primary">Upload to Azure Storage</a>
+                <a href="/docs" class="btn btn-ghost" target="_blank">API Docs</a>
+            </div>
+        </div>
+    </header>
 
-    <!-- Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <main class="wrap">
+        <div class="stats">
+            <div class="stat"><div class="label">Container ID</div><div class="value">{{ container_id or "n/a" }}</div></div>
+            <div class="stat"><div class="label">Python version</div><div class="value">{{ python_version or "n/a" }}</div></div>
+            <div class="stat"><div class="label">Public IP</div><div class="value">{{ IP }}</div></div>
+            <div class="stat"><div class="label">Branch</div><div class="value">{{ branch_name }}</div></div>
+        </div>
+
+        <section>
+            <div class="feature">
+                <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1200&q=80" alt="Data center server racks">
+                <div class="body">
+                    <span class="tag new">NEW</span>
+                    <h2>Upload files with Managed Identity</h2>
+                    <p>Send files straight into a Blob Storage container. The server authenticates with its Azure managed identity, so no account keys, SAS tokens or connection strings are needed.</p>
+                    <div><a href="/upload" class="btn btn-primary">Start uploading</a></div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="section-head">
+                <div>
+                    <h2>Azure</h2>
+                    <p>Resources in the subscription stored in Key Vault</p>
+                </div>
+            </div>
+            <div class="grid">
+                <a class="card" href="/listrg" target="_blank">
+                    <img src="https://images.unsplash.com/photo-1639322537228-f710d846310a?auto=format&fit=crop&w=800&q=75" alt="">
+                    <div class="body"><span class="tag azure">AZURE</span><h3>Resource Groups</h3><p>Every resource group and its region</p></div>
+                </a>
+                <a class="card" href="/networks" target="_blank">
+                    <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=75" alt="">
+                    <div class="body"><span class="tag new">NEW</span><h3>Networks</h3><p>VNets across every subscription the identity can read</p></div>
+                </a>
+                <a class="card" href="/listvnet" target="_blank">
+                    <img src="https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&w=800&q=75" alt="">
+                    <div class="body"><span class="tag azure">AZURE</span><h3>Virtual Networks</h3><p>VNets, address spaces and resource groups</p></div>
+                </a>
+                <a class="card" href="/listsa" target="_blank">
+                    <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=75" alt="">
+                    <div class="body"><span class="tag azure">AZURE</span><h3>Storage Accounts</h3><p>Accounts, regions and SKU tiers</p></div>
+                </a>
+            </div>
+        </section>
+
+        <section>
+            <div class="section-head">
+                <div>
+                    <h2>AWS</h2>
+                    <p>Pick a region, then open a view</p>
+                </div>
+                <select id="region-select" aria-label="AWS region">
+                    <option value="us-east-1">US East 1 (N. Virginia)</option>
+                    <option value="us-east-2">US East 2 (Ohio)</option>
+                    <option value="ap-south-1">Mumbai</option>
+                </select>
+            </div>
+            <div class="grid">
+                <a class="card" data-path="/certs/{region}" href="/certs/us-east-1" target="_blank">
+                    <img src="https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=800&q=75" alt="">
+                    <div class="body"><span class="tag aws">AWS</span><h3>Certificates</h3><p>ACM certificates in the region</p></div>
+                </a>
+                <a class="card" data-path="/certs/{region}/expired" href="/certs/us-east-1/expired" target="_blank">
+                    <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=75" alt="">
+                    <div class="body"><span class="tag aws">AWS</span><h3>Expired Certificates</h3><p>Certificates that need renewing</p></div>
+                </a>
+                <a class="card" data-path="/s3/{region}" href="/s3/us-east-1" target="_blank">
+                    <img src="https://images.unsplash.com/photo-1597852074816-d933c7d2b988?auto=format&fit=crop&w=800&q=75" alt="">
+                    <div class="body"><span class="tag aws">AWS</span><h3>S3 Buckets</h3><p>Buckets and where they live</p></div>
+                </a>
+                <a class="card" data-path="/vpcs/{region}" href="/vpcs/us-east-1" target="_blank">
+                    <img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=800&q=75" alt="">
+                    <div class="body"><span class="tag aws">AWS</span><h3>VPCs</h3><p>Virtual private clouds and CIDRs</p></div>
+                </a>
+            </div>
+        </section>
+
+        <section>
+            <div class="grid">
+                <a class="card" href="/pokemon" target="_blank">
+                    <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=800&q=75" alt="">
+                    <div class="body"><span class="tag fun">FUN</span><h3>Pokémon</h3><p>A public API demo</p></div>
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <footer>Photos from <a href="https://unsplash.com" target="_blank" rel="noopener">Unsplash</a> &middot; Powered by FastAPI</footer>
+
+    <script>
+        document.getElementById('region-select').addEventListener('change', function () {
+            var region = this.value;
+            document.querySelectorAll('a[data-path]').forEach(function (a) {
+                a.setAttribute('href', a.dataset.path.replace('{region}', region));
+            });
+        });
+    </script>
 </body>
 </html>
-

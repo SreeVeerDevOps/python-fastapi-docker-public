@@ -19,10 +19,9 @@
     <th>SA Region</th>
     <th>SA Tier</th>
     </tr>
-    <tr>
     {% for sa_accounts_name, sa_accounts_loc, sa_sku in data %}
-    {# https://stackoverflow.com/questions/27035728/flask-cannot-import-enumerate-undefinederror-enumerate-is-undefined #}
-    <td>{{ loop.index0 }}</td>
+    <tr>
+    <td>{{ loop.index }}</td>
     <td>{{ sa_accounts_name }}</td>
     <td>{{ sa_accounts_loc }}</td>
     <td>{{ sa_sku }}</td>

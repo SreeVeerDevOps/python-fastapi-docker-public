@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload to Azure Storage</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #070b16; --panel: rgba(255,255,255,0.06); --border: rgba(255,255,255,0.12);
+            --text: #e8ecf5; --muted: #9aa5bd; --accent: #4f9dff; --accent2: #9b6bff;
+            --ok: #3ddc97; --err: #ff6b6b;
+        }
+        * { box-sizing: border-box; }
+        body { margin: 0; font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif; background: var(--bg); color: var(--text); }
+        a { color: inherit; }
+        .banner {
+            padding: 4rem 1.5rem 6rem;
+            background:
+                linear-gradient(180deg, rgba(7,11,22,0.45) 0%, var(--bg) 100%),
+                url("https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=2000&q=80") center / cover no-repeat;
+        }
+        .wrap { max-width: 900px; margin: 0 auto; padding: 0 1.5rem; }
+        .banner .wrap { padding: 0; }
+        .back { color: var(--muted); text-decoration: none; font-size: .9rem; }
+        .back:hover { color: var(--text); }
+        h1 { font-size: clamp(2rem, 5vw, 3rem); margin: 1rem 0 .5rem; font-weight: 800; }
+        .meta { color: #c9d2e6; display: flex; gap: .6rem; flex-wrap: wrap; margin-top: 1rem; }
+        .chip { background: rgba(255,255,255,0.08); border: 1px solid var(--border); border-radius: 999px; padding: .3rem .8rem; font-size: .85rem; }
+        .chip b { color: #fff; }
+        .panel {
+            margin-top: -3.5rem; position: relative; background: rgba(16,22,40,0.85); backdrop-filter: blur(14px);
+            border: 1px solid var(--border); border-radius: 20px; padding: 2rem;
+        }
+        .drop {
+            border: 2px dashed rgba(79,157,255,0.5); border-radius: 16px; padding: 2.5rem 1rem; text-align: center;
+            cursor: pointer; transition: background .2s, border-color .2s;
+        }
+        .drop.over, .drop:hover { background: rgba(79,157,255,0.08); border-color: var(--accent); }
+        .drop svg { width: 48px; height: 48px; color: var(--accent); }
+        .drop p { margin: .6rem 0 0; color: var(--muted); }
+        .drop strong { color: var(--text); }
+        #file-input { display: none; }
+        #picked { list-style: none; padding: 0; margin: 1rem 0 0; color: var(--muted); font-size: .9rem; }
+        .btn {
+            margin-top: 1.25rem; width: 100%; padding: .95rem; border: 0; border-radius: 12px; font: inherit; font-weight: 600;
+            color: #fff; background: linear-gradient(90deg, var(--accent), var(--accent2)); cursor: pointer;
+            box-shadow: 0 8px 30px rgba(79,157,255,0.35);
+        }
+        .btn:disabled { opacity: .5; cursor: not-allowed; box-shadow: none; }
+        .alert { border-radius: 12px; padding: .9rem 1.1rem; margin-bottom: 1.25rem; font-size: .95rem; }
+        .alert.err { background: rgba(255,107,107,0.12); border: 1px solid rgba(255,107,107,0.4); }
+        .alert.ok { background: rgba(61,220,151,0.12); border: 1px solid rgba(61,220,151,0.4); }
+        .result { display: flex; justify-content: space-between; gap: 1rem; padding: .35rem 0; }
+        .result .s-ok { color: var(--ok); } .result .s-err { color: var(--err); }
+        h2 { font-size: 1.3rem; margin: 2.5rem 0 1rem; }
+        .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 14px; }
+        table { width: 100%; border-collapse: collapse; font-size: .92rem; }
+        th, td { padding: .75rem 1rem; text-align: left; border-bottom: 1px solid var(--border); white-space: nowrap; }
+        th { color: var(--muted); font-weight: 500; font-size: .78rem; text-transform: uppercase; letter-spacing: .06em; }
+        tr:last-child td { border-bottom: 0; }
+        td.num { text-align: right; }
+        .muted { color: var(--muted); }
+        .help { color: var(--muted); font-size: .9rem; line-height: 1.6; }
+        code { background: rgba(255,255,255,0.08); padding: .1rem .4rem; border-radius: 6px; }
+        footer { padding: 3rem 1rem; }
+        .toolbar { display: flex; justify-content: space-between; align-items: center; gap: .75rem; flex-wrap: wrap; margin-bottom: .9rem; }
+        .toolbar .muted { font-size: .9rem; }
+        .toolbar .actions { display: flex; gap: .5rem; flex-wrap: wrap; }
+        .btn-sm {
+            padding: .55rem 1rem; border-radius: 10px; font: inherit; font-size: .9rem; font-weight: 600; cursor: pointer;
+            background: rgba(255,255,255,0.08); color: var(--text); border: 1px solid var(--border);
+        }
+        .btn-sm.danger { background: rgba(255,107,107,0.15); border-color: rgba(255,107,107,0.5); color: #ffb3b3; }
+        .btn-sm:hover:not(:disabled) { filter: brightness(1.25); }
+        .btn-sm:disabled { opacity: .45; cursor: not-allowed; }
+        .confirm { display: none; align-items: center; gap: .6rem; flex-wrap: wrap; font-size: .9rem; color: #ffb3b3; }
+        .confirm.show { display: flex; }
+        td.check, th.check { width: 2.5rem; padding-right: 0; }
+        input[type=checkbox] { width: 1rem; height: 1rem; accent-color: var(--accent); cursor: pointer; }
+        tr.file:hover td { background: rgba(79,157,255,0.07); }
+        tr.file.selected td { background: rgba(79,157,255,0.12); }
+        td a.fname { text-decoration: none; border-bottom: 1px dotted var(--muted); }
+        td a.fname:hover { color: #fff; border-bottom-color: #fff; }
+        #preview {
+            position: fixed; z-index: 50; pointer-events: none; display: none;
+            width: 340px; max-width: calc(100vw - 32px); background: #0f1528; border: 1px solid var(--border);
+            border-radius: 14px; box-shadow: 0 20px 50px rgba(0,0,0,0.6); overflow: hidden;
+        }
+        #preview .p-head { padding: .6rem .85rem; border-bottom: 1px solid var(--border); font-size: .8rem; color: var(--muted); }
+        #preview .p-head b { display: block; color: var(--text); font-size: .9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        #preview .p-body { max-height: 280px; overflow: hidden; display: flex; align-items: center; justify-content: center; background: #0a0f1d; }
+        #preview img { max-width: 100%; max-height: 280px; display: block; }
+        #preview pre { margin: 0; padding: .75rem .85rem; width: 100%; font-size: .75rem; line-height: 1.45; color: #cfd8ea; white-space: pre-wrap; word-break: break-word; align-self: flex-start; }
+        #preview .p-note { padding: 1.5rem 1rem; color: var(--muted); font-size: .85rem; text-align: center; }
+    </style>
+</head>
+<body>
+    <header class="banner">
+        <div class="wrap">
+            <a href="/" class="back">&larr; Back to home</a>
+            <h1>Upload to Azure Storage</h1>
+            <div class="meta">
+                <span class="chip">Account: <b>{{ account or "not configured" }}</b></span>
+                <span class="chip">Container: <b>{{ container }}</b></span>
+                <span class="chip">Auth: <b>Managed Identity</b></span>
+            </div>
+        </div>
+    </header>
+
+    <main class="wrap">
+        <div class="panel">
+            {% if error %}<div class="alert err">{{ error }}</div>{% endif %}
+
+            {% if results %}
+            <div class="alert {{ 'ok' if results | selectattr('ok') | list | length == results | length else 'err' }}">
+                {% for r in results %}
+                <div class="result">
+                    <span>{{ r.name }}</span>
+                    {% if r.ok %}<span class="s-ok">{{ r.label }}</span>
+                    {% else %}<span class="s-err">{{ r.message }}</span>{% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {% if account %}
+            <form id="upload-form" method="post" action="/upload" enctype="multipart/form-data">
+                <label class="drop" id="drop" for="file-input">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M7 18a4.6 4.6 0 0 1-.9-9.1A6 6 0 0 1 17.7 7.6 4.5 4.5 0 0 1 17 18"/>
+                        <path d="M12 12v9"/><path d="m8.5 15.5 3.5-3.5 3.5 3.5"/>
+                    </svg>
+                    <p><strong>Drop files here</strong> or click to browse</p>
+                    <p>Up to {{ max_mb }} MB per file. A file with the same name is overwritten.</p>
+                </label>
+                <input type="file" id="file-input" name="files" multiple>
+                <ul id="picked"></ul>
+                <button type="submit" class="btn" id="submit" disabled>Upload</button>
+            </form>
+            {% else %}
+            {% if not error %}<div class="alert err">Storage isn't configured yet.</div>{% endif %}
+            <p class="help">
+                1. Turn on a managed identity for this App Service or VM and let it read secrets in the Key Vault.<br>
+                2. Give the identity used for storage the <code>Storage Blob Data Contributor</code> role on the storage account.<br>
+                3. Add the Key Vault secret <code>storage-account-name</code> and, optionally, <code>storage-container-name</code> (default <code>uploads</code>).<br>
+                4. If storage should use a user-assigned identity, add the secret <code>azure-client-id</code> with its client ID.
+            </p>
+            {% endif %}
+        </div>
+
+        {% if account %}
+        <h2>Recent files in <span class="muted">{{ container }}</span></h2>
+        {% if list_error %}
+            <div class="alert err">{{ list_error }}</div>
+        {% elif blobs %}
+            <div class="toolbar">
+                <span class="muted">{% if total > blobs|length %}Showing newest {{ blobs|length }} of {{ total }} files{% else %}{{ total }} file{{ '' if total == 1 else 's' }}{% endif %} &middot; hover a file to preview</span>
+                <div class="actions" id="actions">
+                    <button type="submit" form="delete-form" class="btn-sm danger" id="delete-selected" disabled>Delete selected</button>
+                    <button type="button" class="btn-sm danger" id="delete-all-btn">Delete all</button>
+                </div>
+                <form class="confirm" id="delete-all-confirm" method="post" action="/upload/delete-all">
+                    <span>Delete all {{ total }} files in <b>{{ container }}</b>? This can't be undone.</span>
+                    <button type="submit" class="btn-sm danger">Yes, delete all</button>
+                    <button type="button" class="btn-sm" id="delete-all-cancel">Cancel</button>
+                </form>
+            </div>
+            <form id="delete-form" method="post" action="/upload/delete">
+            <div class="table-wrap">
+                <table>
+                    <tr>
+                        <th class="check"><input type="checkbox" id="select-all" aria-label="Select all files"></th>
+                        <th>Name</th><th class="num">Size (KB)</th><th>Last modified</th>
+                    </tr>
+                    {% for b in blobs %}
+                    <tr class="file" data-name="{{ b.name }}" data-kind="{{ b.kind }}" data-type="{{ b.content_type }}" data-size="{{ b.size_kb }}">
+                        <td class="check"><input type="checkbox" name="names" value="{{ b.name }}" aria-label="Select {{ b.name }}"></td>
+                        <td><a class="fname" href="/upload/file/{{ b.name | urlencode }}" title="Download">{{ b.name }}</a></td>
+                        <td class="num">{{ b.size_kb }}</td><td>{{ b.last_modified }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+            </form>
+            <div id="preview"><div class="p-head"></div><div class="p-body"></div></div>
+        {% else %}
+            <p class="muted">No files yet. Your first upload will show up here.</p>
+        {% endif %}
+        {% endif %}
+    </main>
+    <footer></footer>
+
+    <script>
+        (function () {
+            var input = document.getElementById('file-input');
+            if (!input) return;
+            var drop = document.getElementById('drop');
+            var picked = document.getElementById('picked');
+            var submit = document.getElementById('submit');
+            var form = document.getElementById('upload-form');
+
+            function render() {
+                picked.innerHTML = '';
+                Array.prototype.forEach.call(input.files, function (f) {
+                    var li = document.createElement('li');
+                    li.textContent = f.name + ' (' + (f.size / 1024).toFixed(1) + ' KB)';
+                    picked.appendChild(li);
+                });
+                submit.disabled = input.files.length === 0;
+                submit.textContent = input.files.length > 1 ? 'Upload ' + input.files.length + ' files' : 'Upload';
+            }
+            input.addEventListener('change', render);
+            ['dragenter', 'dragover'].forEach(function (e) {
+                drop.addEventListener(e, function (ev) { ev.preventDefault(); drop.classList.add('over'); });
+            });
+            ['dragleave', 'drop'].forEach(function (e) {
+                drop.addEventListener(e, function (ev) { ev.preventDefault(); drop.classList.remove('over'); });
+            });
+            drop.addEventListener('drop', function (ev) { input.files = ev.dataTransfer.files; render(); });
+            form.addEventListener('submit', function () { submit.disabled = true; submit.textContent = 'Uploading…'; });
+        })();
+
+        // ---------- Select & delete ----------
+        (function () {
+            var form = document.getElementById('delete-form');
+            if (!form) return;
+            var boxes = form.querySelectorAll('input[name="names"]');
+            var selectAll = document.getElementById('select-all');
+            var delSel = document.getElementById('delete-selected');
+            function sync() {
+                var n = 0;
+                boxes.forEach(function (b) { b.closest('tr').classList.toggle('selected', b.checked); if (b.checked) n++; });
+                delSel.disabled = n === 0;
+                delSel.textContent = n ? 'Delete selected (' + n + ')' : 'Delete selected';
+                selectAll.checked = n === boxes.length;
+                selectAll.indeterminate = n > 0 && n < boxes.length;
+            }
+            boxes.forEach(function (b) { b.addEventListener('change', sync); });
+            selectAll.addEventListener('change', function () {
+                boxes.forEach(function (b) { b.checked = selectAll.checked; });
+                sync();
+            });
+            form.addEventListener('submit', function (ev) {
+                var n = form.querySelectorAll('input[name="names"]:checked').length;
+                if (!window.confirm('Delete ' + n + ' selected file' + (n === 1 ? '' : 's') + '? This can\'t be undone.')) {
+                    ev.preventDefault();
+                    return;
+                }
+                delSel.disabled = true; delSel.textContent = 'Deleting…';
+            });
+
+            var actions = document.getElementById('actions');
+            var confirmAll = document.getElementById('delete-all-confirm');
+            document.getElementById('delete-all-btn').addEventListener('click', function () {
+                actions.style.display = 'none'; confirmAll.classList.add('show');
+            });
+            document.getElementById('delete-all-cancel').addEventListener('click', function () {
+                confirmAll.classList.remove('show'); actions.style.display = '';
+            });
+            confirmAll.addEventListener('submit', function () {
+                confirmAll.querySelector('button[type=submit]').textContent = 'Deleting…';
+            });
+            sync();
+        })();
+
+        // ---------- Hover preview ----------
+        (function () {
+            var box = document.getElementById('preview');
+            if (!box) return;
+            var head = box.querySelector('.p-head'), body = box.querySelector('.p-body');
+            var textCache = {}, timer = null, current = null;
+
+            function fileUrl(name) {
+                return '/upload/file/' + name.split('/').map(encodeURIComponent).join('/') + '?preview=1';
+            }
+            function note(msg) { body.innerHTML = ''; var d = document.createElement('div'); d.className = 'p-note'; d.textContent = msg; body.appendChild(d); }
+            function place(x, y) {
+                var w = box.offsetWidth, h = box.offsetHeight, pad = 16;
+                var left = x + 18, top = y + 18;
+                if (left + w > window.innerWidth - pad) left = x - w - 18;
+                if (top + h > window.innerHeight - pad) top = window.innerHeight - h - pad;
+                box.style.left = Math.max(pad, left) + 'px';
+                box.style.top = Math.max(pad, top) + 'px';
+            }
+            function show(row, ev) {
+                current = row;
+                var name = row.dataset.name, kind = row.dataset.kind;
+                head.innerHTML = '';
+                var b = document.createElement('b'); b.textContent = name; head.appendChild(b);
+                head.appendChild(document.createTextNode(row.dataset.type + ' · ' + row.dataset.size + ' KB'));
+                if (kind === 'image') {
+                    note('Loading…');
+                    var img = new Image();
+                    img.onload = function () { if (current === row) { body.innerHTML = ''; body.appendChild(img); place(ev.clientX, ev.clientY); } };
+                    img.onerror = function () { if (current === row) note('Preview not available'); };
+                    img.src = fileUrl(name);
+                } else if (kind === 'text') {
+                    note('Loading…');
+                    textCache[name] = textCache[name] || fetch(fileUrl(name)).then(function (r) {
+                        if (!r.ok) throw new Error();
+                        var cut = r.headers.get('X-Truncated') === '1';
+                        return r.text().then(function (t) { return t + (cut ? '\n…' : ''); });
+                    });
+                    textCache[name].then(function (t) {
+                        if (current !== row) return;
+                        body.innerHTML = '';
+                        var pre = document.createElement('pre'); pre.textContent = t || '(empty file)'; body.appendChild(pre);
+                        place(ev.clientX, ev.clientY);
+                    }).catch(function () { delete textCache[name]; if (current === row) note('Preview not available'); });
+                } else {
+                    note('No preview for this file type. Click the name to download.');
+                }
+                box.style.display = 'block';
+                place(ev.clientX, ev.clientY);
+            }
+            function hide() { clearTimeout(timer); current = null; box.style.display = 'none'; }
+
+            document.querySelectorAll('tr.file').forEach(function (row) {
+                var last;
+                row.addEventListener('mouseenter', function (ev) {
+                    last = ev; clearTimeout(timer);
+                    timer = setTimeout(function () { show(row, last); }, 250);
+                });
+                row.addEventListener('mousemove', function (ev) { last = ev; if (current === row) place(ev.clientX, ev.clientY); });
+                row.addEventListener('mouseleave', hide);
+            });
+            window.addEventListener('scroll', hide, { passive: true });
+        })();
+    </script>
+</body>
+</html>

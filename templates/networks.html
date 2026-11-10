@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Networks</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #070b16; --panel: rgba(255,255,255,0.06); --border: rgba(255,255,255,0.12);
+            --text: #e8ecf5; --muted: #9aa5bd; --accent: #4f9dff; --err: #ff6b6b;
+        }
+        * { box-sizing: border-box; }
+        body { margin: 0; font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif; background: var(--bg); color: var(--text); }
+        .banner {
+            padding: 4rem 1.5rem 6rem;
+            background:
+                linear-gradient(180deg, rgba(7,11,22,0.45) 0%, var(--bg) 100%),
+                url("https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&w=2000&q=80") center / cover no-repeat;
+        }
+        .wrap { max-width: 1100px; margin: 0 auto; padding: 0 1.5rem; }
+        .banner .wrap { padding: 0; }
+        .back { color: var(--muted); text-decoration: none; font-size: .9rem; }
+        .back:hover { color: var(--text); }
+        h1 { font-size: clamp(2rem, 5vw, 3rem); margin: 1rem 0 .5rem; font-weight: 800; }
+        .lead { color: #c9d2e6; margin: 0; }
+        .stats { margin-top: -3.5rem; position: relative; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; }
+        .stat { background: rgba(16,22,40,0.85); backdrop-filter: blur(14px); border: 1px solid var(--border); border-radius: 16px; padding: 1.1rem 1.25rem; }
+        .stat .label { font-size: .75rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+        .stat .value { font-size: 1.6rem; font-weight: 800; margin-top: .25rem; }
+        .stat .value.small { font-size: .95rem; font-weight: 600; word-break: break-all; padding-top: .45rem; }
+        .search { margin: 2rem 0 1rem; }
+        .search input {
+            width: 100%; padding: .85rem 1rem; border-radius: 12px; font: inherit; color: var(--text);
+            background: var(--panel); border: 1px solid var(--border);
+        }
+        .search input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+        .sub { margin: 1.5rem 0; border: 1px solid var(--border); border-radius: 16px; overflow: hidden; background: rgba(255,255,255,0.03); }
+        .sub-head { display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; padding: 1rem 1.25rem; background: var(--panel); border-bottom: 1px solid var(--border); }
+        .sub-head h2 { margin: 0; font-size: 1.1rem; }
+        .sub-head .id { color: var(--muted); font-size: .8rem; font-family: ui-monospace, Consolas, monospace; }
+        .pill { font-size: .8rem; padding: .25rem .7rem; border-radius: 999px; background: rgba(79,157,255,0.15); border: 1px solid rgba(79,157,255,0.4); white-space: nowrap; }
+        .table-wrap { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: .92rem; }
+        th, td { padding: .7rem 1.25rem; text-align: left; border-bottom: 1px solid var(--border); vertical-align: top; }
+        th { color: var(--muted); font-weight: 500; font-size: .75rem; text-transform: uppercase; letter-spacing: .06em; white-space: nowrap; }
+        tr:last-child td { border-bottom: 0; }
+        td.num, th.num { text-align: right; }
+        .cidr { display: inline-block; font-family: ui-monospace, Consolas, monospace; font-size: .82rem; background: rgba(255,255,255,0.07); border-radius: 6px; padding: .1rem .45rem; margin: 0 .25rem .25rem 0; }
+        .note { padding: 1rem 1.25rem; color: var(--muted); }
+        .note.err { color: #ffb3b3; }
+        .empty { text-align: center; color: var(--muted); padding: 3rem 1rem; border: 1px dashed var(--border); border-radius: 16px; margin-top: 2rem; }
+        footer { padding: 3rem 1rem; }
+    </style>
+</head>
+<body>
+    <header class="banner">
+        <div class="wrap">
+            <a href="/" class="back">&larr; Back to home</a>
+            <h1>Networks</h1>
+            <p class="lead">Virtual networks in every subscription the managed identity can read.</p>
+        </div>
+    </header>
+
+    <main class="wrap">
+        <div class="stats">
+            <div class="stat"><div class="label">Subscriptions</div><div class="value">{{ subscriptions | length }}</div></div>
+            <div class="stat"><div class="label">Virtual networks</div><div class="value">{{ total_vnets }}</div></div>
+            <div class="stat"><div class="label">Regions</div><div class="value">{{ total_regions }}</div></div>
+            <div class="stat"><div class="label">Managed identity</div><div class="value small">{{ identity }}</div></div>
+        </div>
+
+        {% if not subscriptions %}
+        <div class="empty">
+            <b>This identity can't see any subscriptions.</b><br><br>
+            Give the managed identity <b>Reader</b> on each subscription, or on a management group above them.<br>
+            New role assignments can take a few minutes to apply.
+        </div>
+        {% else %}
+        <div class="search"><input id="filter" type="search" placeholder="Filter by VNet, resource group, region or address space" aria-label="Filter networks"></div>
+
+        {% for sub in subscriptions %}
+        <section class="sub">
+            <div class="sub-head">
+                <div>
+                    <h2>{{ sub.name }}</h2>
+                    <div class="id">{{ sub.id }}{% if sub.state and 'Enabled' not in sub.state %} &middot; {{ sub.state }}{% endif %}</div>
+                </div>
+                <span class="pill"><span class="count">{{ sub.vnets | length }}</span> VNet{{ '' if sub.vnets | length == 1 else 's' }}</span>
+            </div>
+            {% if sub.error %}
+                <div class="note err">{{ sub.error }}</div>
+            {% elif sub.vnets %}
+                <div class="table-wrap">
+                    <table>
+                        <tr><th>Name</th><th>Resource group</th><th>Region</th><th>Address space</th><th class="num">Subnets</th><th class="num">Peerings</th></tr>
+                        {% for v in sub.vnets %}
+                        <tr class="vnet">
+                            <td>{{ v.name }}</td>
+                            <td>{{ v.resource_group }}</td>
+                            <td>{{ v.location }}</td>
+                            <td>{% for p in v.address_space %}<span class="cidr">{{ p }}</span>{% else %}<span class="note">none</span>{% endfor %}</td>
+                            <td class="num">{{ v.subnets }}</td>
+                            <td class="num">{{ v.peerings }}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+                <div class="note no-match" hidden>No VNets here match the filter.</div>
+            {% else %}
+                <div class="note">No virtual networks in this subscription.</div>
+            {% endif %}
+        </section>
+        {% endfor %}
+        {% endif %}
+    </main>
+    <footer></footer>
+
+    <script>
+        (function () {
+            var input = document.getElementById('filter');
+            if (!input) return;
+            input.addEventListener('input', function () {
+                var q = input.value.trim().toLowerCase();
+                document.querySelectorAll('section.sub').forEach(function (sec) {
+                    var rows = sec.querySelectorAll('tr.vnet');
+                    if (!rows.length) return;
+                    var shown = 0;
+                    rows.forEach(function (tr) {
+                        var hit = !q || tr.textContent.toLowerCase().indexOf(q) !== -1;
+                        tr.hidden = !hit;
+                        if (hit) shown++;
+                    });
+                    sec.querySelector('.count').textContent = q ? shown + ' of ' + rows.length : rows.length;
+                    sec.querySelector('.table-wrap').hidden = shown === 0;
+                    sec.querySelector('.no-match').hidden = shown !== 0;
+                });
+            });
+        })();
+    </script>
+</body>
+</html>

@@ -19,14 +19,23 @@
     <th>vNET Address Space</th>
     <th>vNET Resource Group</th>
     </tr>
-    <tr>
     {% for vnet_name,vnet_address_space,vnet_rg_name in data %}
-    {# https://stackoverflow.com/questions/27035728/flask-cannot-import-enumerate-undefinederror-enumerate-is-undefined #}
-    <td>{{ loop.index0 }}</td>
+    <tr>
+    <td>{{ loop.index }}</td>
     <td>{{ vnet_name }}</td>
     <td>{{ vnet_address_space }}</td>
     <td>{{ vnet_rg_name }}</td>
     </tr>
+    {% else %}
+    <tr><td colspan="4">
+        <b>No virtual networks are visible to this app.</b><br>
+        Subscription: {{ subscription_name }} ({{ subscription_id }})<br>
+        Managed identity (client ID): {{ identity }}<br><br>
+        Azure only returns the VNets this identity is allowed to read. Check that:<br>
+        1. The identity has the <b>Reader</b> role on the <b>whole subscription</b>, not just one resource group.<br>
+        2. Your VNets are in this subscription. The <code>subscriptionid</code> secret in Key Vault decides which one is used.<br>
+        3. A new role assignment can take a few minutes to apply. Restart the app after adding one.
+    </td></tr>
     {% endfor %}
 </table>
     </div>

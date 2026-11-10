@@ -15,6 +15,7 @@ azure-keyvault-secrets
 azure-identity
 azure-mgmt-compute
 azure-mgmt-resource
+azure-mgmt-resource-subscriptions
 azure-mgmt-network
 azure-mgmt-storage
 google-compute-engine
@@ -26,3 +27,4 @@ pymongo
 opentelemetry-api
 opentelemetry-sdk
 azure-monitor-opentelemetry
+python-multipart

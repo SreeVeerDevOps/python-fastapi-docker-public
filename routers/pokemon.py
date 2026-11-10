@@ -11,7 +11,7 @@ templates = Jinja2Templates(directory="templates")
 def get_pokemon(request: Request):
     URL = requests.get('https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0')
     POKEMON_LIST = URL.json()['results']
-    return templates.TemplateResponse("pokemon.html", {"request": request, "name": "Hello World", "POKEMON_LIST": POKEMON_LIST})
+    return templates.TemplateResponse(request, "pokemon.html", {"name": "Hello World", "POKEMON_LIST": POKEMON_LIST})
         
 
 @router.get('/pokemon/{name}',tags=["Pokemon"])
@@ -26,9 +26,9 @@ def get_pokemon_name(request: Request, name: str):
             if pokemon['name'] == name:
                 pokemon_name = pokemon['name']
                 pokemon_url = pokemon['url']
-                return templates.TemplateResponse("pokesingle.html", {"request": request, "name": "Hello World", "pokemon_name": pokemon_name, "pokemon_url": pokemon_url})
+                return templates.TemplateResponse(request, "pokesingle.html", {"name": "Hello World", "pokemon_name": pokemon_name, "pokemon_url": pokemon_url})
     else:
       print(f'Pokemon {name} Dont Exists...')
-      return templates.TemplateResponse("pokesingle.html", {"request": request, "name": "Hello World", "pokemon_name": 'Pokemon Name Not Found', "pokemon_url": 'Pokemon URL Not Found'}) 
+      return templates.TemplateResponse(request, "pokesingle.html", {"name": "Hello World", "pokemon_name": 'Pokemon Name Not Found', "pokemon_url": 'Pokemon URL Not Found'}) 
 
   
